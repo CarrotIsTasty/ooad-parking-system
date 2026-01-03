@@ -17,12 +17,14 @@ public class Floor {
     public void addRow(Row row) {
         rows.add(row);
     }
-    //getAllFloor method
-    public int getFloorNumber() {
+
+    public int getFloorNumber() { 
         return floorNumber;
     }
     
-    public List<Row> getRows() {
+    //getAllRow method iteration with iteration
+    
+    public List<Row> getRows() { //getAllRow method iteration
         return rows;
     }
     

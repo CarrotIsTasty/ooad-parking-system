@@ -20,7 +20,9 @@ public class ParkingLot {
         return name;
     }
     
-    public List<Floor> getFloors() {
+    //getAllRow method iteration with iteration
+    
+    public List<Floor> getFloors() { //getAllRow method iteration
         return floors;
     }
 }

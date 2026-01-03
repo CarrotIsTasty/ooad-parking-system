@@ -18,14 +18,14 @@ public class Row {
         spots.add(spot);
     }
     
-    //getAllRow method iteration 
-    //getRow method iteration with parameters
+    //getSpot method iteration with parameters
     
-    public int getRowNumber() {
+    
+    public int getRowNumber() { 
         return rowNumber;
     }
     
-    public List<Spot> getSpots() {
+    public List<Spot> getSpots() { //getSpot method iteration
         return spots;
     }
     

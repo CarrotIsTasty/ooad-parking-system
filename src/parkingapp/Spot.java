@@ -27,11 +27,11 @@ public class Spot {
         return String.format("F%d-R%d-S%d", row.getFloor().getFloorNumber(), row.getRowNumber(), spotNumber);
     }
     
-    public String getSpotId() {
+    public String getSpotId() { //this too
         return spotId;
     }
    
-    public int getSpotNumber() {
+    public int getSpotNumber() { //this need update
         return spotNumber;
     }
     
