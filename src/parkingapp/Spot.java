@@ -47,11 +47,11 @@ public class Spot {
         this.spotType = spotType;
     }
     
-    public SpotStatus getStatus() {
+    public SpotStatus getStatus() { //getTicket(spotID) if null return true
         return status;
     }
     
-    public void setStatus(SpotStatus status) {
+    public void setStatus(SpotStatus status) { //setTicket(spotID) if spotID is not null, call generateTicket(spotID)
         this.status = status;
     }
     

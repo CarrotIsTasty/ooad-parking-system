@@ -18,6 +18,9 @@ public class Row {
         spots.add(spot);
     }
     
+    //getAllRow method iteration 
+    //getRow method iteration with parameters
+    
     public int getRowNumber() {
         return rowNumber;
     }

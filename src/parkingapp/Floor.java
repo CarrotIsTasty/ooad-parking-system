@@ -17,7 +17,7 @@ public class Floor {
     public void addRow(Row row) {
         rows.add(row);
     }
-    
+    //getAllFloor method
     public int getFloorNumber() {
         return floorNumber;
     }
