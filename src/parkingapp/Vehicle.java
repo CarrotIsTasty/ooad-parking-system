@@ -2,14 +2,14 @@ package parkingapp;
 
 public abstract class Vehicle {
     private String plateNumber;
-    private boolean handicapped;
-    private boolean vip;
+    private boolean isHandicapped;
+    private boolean isVip;
     private VehicleType type;
     
-    public Vehicle(String plateNumber, boolean handicapped, boolean vip, VehicleType type){
+    public Vehicle(String plateNumber, boolean isHandicapped, boolean isVip, VehicleType type){
         this.plateNumber = plateNumber;
-        this.handicapped = handicapped;    
-        this.vip = vip;
+        this.isHandicapped = isHandicapped;    
+        this.isVip = isVip;
         this.type = type;
     }
 
@@ -29,20 +29,20 @@ public abstract class Vehicle {
         this.plateNumber = plateNumber;
     }
 
-    public void setVip(boolean vip) {
-        this.vip = vip;
+    public void setVip(boolean isVip) {
+        this.isVip = isVip;
     }
 
     public boolean isVip() {
-        return vip;
+        return isVip;
     }
 
      public boolean isHandicapped() {
-        return handicapped;
+        return isHandicapped;
     }
      
-    public void setHandicapped(boolean handicapped) {
-        this.handicapped = handicapped;
+    public void setHandicapped(boolean isHandicapped) {
+        this.isHandicapped = isHandicapped;
     }
 
 }
