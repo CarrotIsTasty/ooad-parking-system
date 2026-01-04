@@ -20,7 +20,7 @@ public class ParkingLot {
         return name;
     }
     
-    //getAllFloor method iteration with parameters
+    //getAllFloor method iteration with parameter
     public Floor getFloorByNumber(int floorNumber) {
         for (Floor floor : floors) {
             if (floor.getFloorNumber() == floorNumber) {
