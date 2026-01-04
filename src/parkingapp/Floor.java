@@ -23,8 +23,17 @@ public class Floor {
     }
     
     //getAllRow method iteration with iteration
+    public Row getRowByNumber(int rowNumber) {
+        for (Row row : rows) {
+            if (row.getRowNumber() == rowNumber) {
+                return row;
+            }
+        }
+        return null;
+       }
+  
     
-    public List<Row> getRows() { //getAllRow method iteration
+    public List<Row> getRows() { 
         return rows;
     }
     

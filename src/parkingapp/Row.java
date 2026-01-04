@@ -25,6 +25,15 @@ public class Row {
         return rowNumber;
     }
     
+        public Spot getSpotByNumber(int spotNumber) {
+        for (Spot spot : spots) {
+            if (spot.getSpotNumber() == spotNumber) {
+                return spot;
+            }
+        }
+        return null;
+       }
+    
     public List<Spot> getSpots() { //getSpot method iteration
         return spots;
     }
