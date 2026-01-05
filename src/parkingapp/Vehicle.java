@@ -2,13 +2,11 @@ package parkingapp;
 
 public abstract class Vehicle {
     private String plateNumber;
-    private boolean isHandicapped;
     private boolean isVip;
     private VehicleType type;
     
-    public Vehicle(String plateNumber, boolean isHandicapped, boolean isVip, VehicleType type){
+    public Vehicle(String plateNumber, boolean isVip, VehicleType type){
         this.plateNumber = plateNumber;
-        this.isHandicapped = isHandicapped;    
         this.isVip = isVip;
         this.type = type;
     }
