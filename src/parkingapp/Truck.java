@@ -1,7 +1,7 @@
 package parkingapp;
 
 public class Truck extends Vehicle{
-    public Truck(String platenumber, boolean isHandicapped, boolean isVip){
-        super(platenumber, isHandicapped, isVip, VehicleType.TRUCK);
+    public Truck(String platenumber, boolean isVip){
+        super(platenumber, isVip, VehicleType.TRUCK);
     }
 }
