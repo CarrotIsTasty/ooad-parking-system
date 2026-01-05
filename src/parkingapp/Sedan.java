@@ -2,8 +2,8 @@ package parkingapp;
 
 public class Sedan extends Vehicle{
     
-    public Sedan(String platenumber, boolean isHandicapped, boolean isVip){
-        super(platenumber, isHandicapped, isVip, VehicleType.SEDAN);
+    public Sedan(String platenumber, boolean isVip){
+        super(platenumber, isVip, VehicleType.SEDAN);
     }
     
 }
