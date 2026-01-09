@@ -34,13 +34,4 @@ public abstract class Vehicle {
     public boolean isVip() {
         return isVip;
     }
-
-     public boolean isHandicapped() {
-        return isHandicapped;
-    }
-     
-    public void setHandicapped(boolean isHandicapped) {
-        this.isHandicapped = isHandicapped;
-    }
-
 }

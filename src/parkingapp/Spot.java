@@ -1,7 +1,7 @@
 package parkingapp;
 
 enum SpotType {
-    COMPACT, REGULAR, HANDICAPPED, RESERVED
+    COMPACT, REGULAR, RESERVED
 }
 
 enum SpotStatus {
@@ -60,10 +60,6 @@ public class Spot {
             return false;
         }
         
-        if (vehicle.isHandicapped()) {
-            return true;
-        }
-        
         VehicleType vType = vehicle.getType();
         
         switch (spotType) {
@@ -71,8 +67,6 @@ public class Spot {
                 return vType == VehicleType.MOTORCYCLE || vType == VehicleType.BICYCLE || vType == VehicleType.SEDAN;
             case REGULAR:
                 return vType == VehicleType.SEDAN || vType == VehicleType.SUV || vType == VehicleType.TRUCK;
-            case HANDICAPPED:
-                return vehicle.isHandicapped();
             default:
                 return false;
         }
