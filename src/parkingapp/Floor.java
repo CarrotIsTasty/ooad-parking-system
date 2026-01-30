@@ -14,30 +14,16 @@ public class Floor {
         this.rows = new ArrayList<>();
     }
     
-    public void addRow(Row row) {
-        rows.add(row);
-    }
+    public void addRow(Row row) {rows.add(row);}
+    
+    //Must do for loop to iterate through list
+    public List<Row> getAllRow(){return this.rows;}
+    
+    public Row getRow(int id){return this.rows.get(id);}
 
-    public int getFloorNumber() { 
-        return floorNumber;
-    }
-    
-    //getAllRow method iteration with iteration
-    public Row getRowByNumber(int rowNumber) {
-        for (Row row : rows) {
-            if (row.getRowNumber() == rowNumber) {
-                return row;
-            }
-        }
-        return null;
-       }
-  
-    
-    public List<Row> getRows() { 
-        return rows;
-    }
-    
-    public ParkingLot getParkingLot() {
-        return parkingLot;
-    }
+    public int getFloorNumber() {return floorNumber;}
+   
+    public ParkingLot getParkingLot() {return parkingLot;}
 }
+
+//checked

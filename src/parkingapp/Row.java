@@ -18,27 +18,22 @@ public class Row {
         spots.add(spot);
     }
     
-    //getSpot method iteration with parameters
+    public Spot getSpot(int id){
+        return spots.get(id);
+    }
     
+    public List<Spot> getAllSpots() {
+    return spots;
+    }
     
     public int getRowNumber() { 
         return rowNumber;
-    }
-    
-        public Spot getSpotByNumber(int spotNumber) {
-        for (Spot spot : spots) {
-            if (spot.getSpotNumber() == spotNumber) {
-                return spot;
-            }
-        }
-        return null;
-       }
-    
-    public List<Spot> getSpots() { //getSpot method iteration
-        return spots;
     }
     
     public Floor getFloor() {
         return floor;
     }
 }
+
+
+//checked

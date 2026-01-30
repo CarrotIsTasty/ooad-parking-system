@@ -21,16 +21,13 @@ public class ParkingLot {
     }
     
     //getAllFloor method iteration with parameter
-    public Floor getFloorByNumber(int floorNumber) {
-        for (Floor floor : floors) {
-            if (floor.getFloorNumber() == floorNumber) {
-                return floor;
-            }
-        }
-        return null;
+    public Floor getFloor(int id){
+        return floors.get(id);
        }
     
     public List<Floor> getFloors() {
         return floors;
     }
 }
+
+//checked
