@@ -81,6 +81,11 @@ public class ParkingPage extends javax.swing.JFrame {
         });
 
         ReverseTimeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ReverseTimeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReverseTimeComboBoxActionPerformed(evt);
+            }
+        });
 
         ReserveLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         ReserveLabel.setText("Reserve Time:");
@@ -171,6 +176,10 @@ public class ParkingPage extends javax.swing.JFrame {
         new LandingPage().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_CloseButtonActionPerformed
+
+    private void ReverseTimeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReverseTimeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReverseTimeComboBoxActionPerformed
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

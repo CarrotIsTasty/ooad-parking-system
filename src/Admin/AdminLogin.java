@@ -5,25 +5,25 @@ import java.time.LocalDateTime;
 
 public class AdminLogin {
     private Connection connection;
-    private String currentAdminId;
+    private String currentAdminName;
     
     public AdminLogin(Connection connection) {
         this.connection = connection;
     }
     
     // For GUI login
-    public boolean login(String adminId, String password) {
+    public boolean login(String adminName, String password) {
         try {
             String hashedPassword = hashPassword(password);
-            String query = "SELECT * FROM administrator WHERE adminID = ? AND password = ?";
+            String query = "SELECT * FROM administrator WHERE username = ? AND password = ?";
             PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, adminId);
+            stmt.setString(1, adminName);
             stmt.setString(2, hashedPassword);
             
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                currentAdminId = adminId;
-                updateLastLogin(adminId);
+                currentAdminName = adminName;
+                updateLastLogin(adminName);
                 rs.close();
                 stmt.close();
                 return true;
@@ -51,12 +51,12 @@ public class AdminLogin {
         }
     }
     
-    private void updateLastLogin(String adminId) {
+    private void updateLastLogin(String adminName) {
         try {
-            String query = "UPDATE administrator SET lastLoginDate = ? WHERE adminID = ?";
+            String query = "UPDATE administrator SET lastLoginDate = ? WHERE username = ?";
             PreparedStatement stmt = connection.prepareStatement(query);
             stmt.setString(1, LocalDateTime.now().toString());
-            stmt.setString(2, adminId);
+            stmt.setString(2, adminName);
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {

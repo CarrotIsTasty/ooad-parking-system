@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class AdminLoginGUI extends JFrame {
-    private JTextField txtAdminId;
+    private JTextField txtAdminName;
     private JPasswordField txtPassword;
     private JButton btnLogin;
     private Connection connection;
@@ -61,11 +61,11 @@ public class AdminLoginGUI extends JFrame {
         
         gbc.gridx = 0;
         gbc.gridy = 0;
-        loginPanel.add(new JLabel("Admin ID:"), gbc);
+        loginPanel.add(new JLabel("Admin Name:"), gbc);
         
         gbc.gridx = 1;
-        txtAdminId = new JTextField(20);
-        loginPanel.add(txtAdminId, gbc);
+        txtAdminName = new JTextField(20);
+        loginPanel.add(txtAdminName, gbc);
   
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -92,7 +92,7 @@ public class AdminLoginGUI extends JFrame {
         loginPanel.add(btnLogin, gbc);
         
         //later i will create a test data for this
-        JLabel lblInfo = new JLabel("Default: ADM001 / password", JLabel.CENTER);
+        JLabel lblInfo = new JLabel("Default: Herbert / password", JLabel.CENTER);
         lblInfo.setFont(new Font("Arial", Font.ITALIC, 12));
         lblInfo.setForeground(Color.GRAY);
         
@@ -109,23 +109,24 @@ public class AdminLoginGUI extends JFrame {
     }
     
     private void performLogin() {
-        String adminId = txtAdminId.getText().trim();
+        String adminName = txtAdminName.getText().trim();
         String password = new String(txtPassword.getPassword());
         
-        if (adminId.isEmpty() || password.isEmpty()) {
+        if (adminName.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
-                "Please enter both Admin ID and Password",
+                "Please enter both Admin Name and Password",
                 "Login Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
         try {
             AdminLogin admin = new AdminLogin(connection);
-            if (admin.login(adminId, password)) {
+            if (admin.login(adminName, password)) {
                 dispose();
+                new AdminDashboardGUI(connection, adminName);
             } else {
                 JOptionPane.showMessageDialog(this, 
-                    "Invalid Admin ID or Password",
+                    "Invalid Admin Name or Password",
                     "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {

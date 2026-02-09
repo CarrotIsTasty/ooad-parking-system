@@ -45,6 +45,7 @@ public class DatabaseConnection {
                 hourly_rate REAL NOT NULL,
                 is_available BOOLEAN NOT NULL DEFAULT 1,
                 current_vehicle_plate TEXT DEFAULT NULL,
+                entry_time DATETIME DEFAULT NULL,
                 UNIQUE(floor_number, row_number, spot_number)
             )
             """,
@@ -54,7 +55,7 @@ public class DatabaseConnection {
                 username VARCHAR(50) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                lastLoginDate DATETIME,   
+                lastLoginDate DATETIME  
             )
             """
         };
