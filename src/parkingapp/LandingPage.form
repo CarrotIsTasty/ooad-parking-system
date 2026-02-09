@@ -35,6 +35,7 @@
                           <Component id="ParkingButton" max="32767" attributes="0"/>
                           <Component id="ReserveParking" pref="191" max="32767" attributes="0"/>
                           <Component id="ExitParkingButton" alignment="1" max="32767" attributes="0"/>
+                          <Component id="CloseButton" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -53,7 +54,9 @@
               <Component id="ReserveParking" min="-2" pref="69" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="ExitParkingButton" min="-2" pref="69" max="-2" attributes="0"/>
-              <EmptySpace pref="311" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="CloseButton" min="-2" pref="67" max="-2" attributes="0"/>
+              <EmptySpace pref="226" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -89,6 +92,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ExitParkingButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="CloseButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Close"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CloseButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

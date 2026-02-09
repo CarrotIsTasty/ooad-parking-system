@@ -66,7 +66,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         
         JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);  
         initParkingSummaryButton();
         
         ParkingSummaryPanel.add(VehicleTypeLabel);
@@ -74,6 +74,14 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryPanel.add(FloorLabel);
         ParkingSummaryPanel.add(ParkingSpotLabel);
         ParkingSummaryPanel.add(ParkingRateLabel);
+        
+        if (isReserveMode()) {
+            JLabel ReserverTimpStampLabel = new JLabel("Reserved Time    : " + reserveTimeStamp);
+            ReserverTimpStampLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            ReserverTimpStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            ParkingSummaryPanel.add(ReserverTimpStampLabel);
+        }
+        
         ParkingSummaryPanel.add(ParkingSummaryButtonPanel);
         
         ParkingSummaryPanel.revalidate();
@@ -89,7 +97,8 @@ public class ParkingSummary extends javax.swing.JFrame {
         confirmButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
         backButton.addActionListener(e -> {
-            if (!isReserveMode()){
+            System.out.println("back button " + reserveTimeStamp);
+            if (isReserveMode()){
                 new ParkingFloorPage(type, plate, reserveTimeStamp).setVisible(true);
             } else {
                 new ParkingFloorPage(type, plate).setVisible(true);
@@ -134,7 +143,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         
         JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER); 
         initParkingSummaryTicketButton();
         
         ParkingSummaryTicketPanel.add(TicketIDLabel);
@@ -143,6 +152,14 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.add(FloorLabel);
         ParkingSummaryTicketPanel.add(ParkingSpotLabel);
         ParkingSummaryTicketPanel.add(ParkingRateLabel);
+        
+        if (isReserveMode()) {
+            JLabel ReserverTimpStampLabel = new JLabel("Reserved Time    : " + reserveTimeStamp);
+            ReserverTimpStampLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            ReserverTimpStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            ParkingSummaryTicketPanel.add(ReserverTimpStampLabel);
+        }
+        
         ParkingSummaryTicketPanel.add(ParkingSummaryTicketButtonPanel);
         
         ParkingSummaryTicketPanel.revalidate();

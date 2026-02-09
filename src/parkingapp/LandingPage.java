@@ -15,6 +15,7 @@ public class LandingPage extends javax.swing.JFrame {
         ParkingButton = new javax.swing.JButton();
         ReserveParking = new javax.swing.JButton();
         ExitParkingButton = new javax.swing.JButton();
+        CloseButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -42,6 +43,13 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        CloseButton.setText("Close");
+        CloseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CloseButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -56,7 +64,8 @@ public class LandingPage extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ParkingButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ReserveParking, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                            .addComponent(ExitParkingButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(ExitParkingButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(CloseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(110, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -70,7 +79,9 @@ public class LandingPage extends javax.swing.JFrame {
                 .addComponent(ReserveParking, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(ExitParkingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(311, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(CloseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(226, Short.MAX_VALUE))
         );
 
         pack();
@@ -90,6 +101,10 @@ public class LandingPage extends javax.swing.JFrame {
         new ParkingPage(ParkingPage.Mode.PARKING).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ParkingButtonActionPerformed
+
+    private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_CloseButtonActionPerformed
 
     public static void main(String args[]) {
 
@@ -123,6 +138,7 @@ public class LandingPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CloseButton;
     private javax.swing.JButton ExitParkingButton;
     private javax.swing.JButton ParkingButton;
     private javax.swing.JButton ReserveParking;
