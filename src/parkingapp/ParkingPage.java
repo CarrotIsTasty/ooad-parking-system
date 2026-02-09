@@ -119,6 +119,7 @@ public class ParkingPage extends javax.swing.JFrame {
             return;
         }
         new ParkingFloorPage(type, plate).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_NextButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed

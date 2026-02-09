@@ -32,7 +32,7 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     }
     
     public void initFloorButton() {
-        FloorsPanel.setLayout(new GridLayout(0, 2, 10, 10));
+        FloorsPanel.setLayout(new GridLayout(0, 1, 10, 10));
         int totalFloors = 5;
 
         FloorsPanel.removeAll();
@@ -67,12 +67,12 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     
     public void initRowButton(int floorNumber) {
         RowPanel.setLayout(new GridLayout(0, 2, 10, 10));
-        int totalRow = 5;
+        int totalRow = 6;
 
         RowPanel.removeAll();
 
         for (int i = 1; i <= totalRow; i++) {
-            JButton rowBtn = new JButton("Spot " + i);
+            JButton rowBtn = new JButton("Row " + i);
             int rowNumber = i;
 
             rowBtn.addActionListener(e -> {
@@ -96,13 +96,13 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     }
     
     public void initSpotButton(int floorNumber, int rowNumber) {
-        SpotPanel.setLayout(new GridLayout(0, 2, 10, 10));
-        int totalRow = 5;
+        SpotPanel.setLayout(new GridLayout(0, 3, 10, 10));
+        int totalSpot = 3;
 
         SpotPanel.removeAll();
 
-        for (int i = 1; i <= totalRow; i++) {
-            JButton spotBtn = new JButton("Row " + i);
+        for (int i = 1; i <= totalSpot; i++) {
+            JButton spotBtn = new JButton("Spot " + i);
             int spotNumber = i;
 
             spotBtn.addActionListener(e -> {
@@ -256,6 +256,8 @@ public class ParkingFloorPage extends javax.swing.JFrame {
                 "\nRow: " + selectedRow +
                 "\nSpot: " + selectedSpot;
         System.out.println(Confirmation);
+        new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
