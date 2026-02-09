@@ -162,7 +162,7 @@ public class ParkingPage extends javax.swing.JFrame {
         } else if (mode == Mode.PARKING){
             new ParkingFloorPage(type, plate).setVisible(true);
         } else if (mode == Mode.EXIT){
-            //new ParkingSummary(plate).setVisible(true);
+            new ExitParkingPage(plate).setVisible(true);
         }
         this.dispose();
     }//GEN-LAST:event_NextButtonActionPerformed
