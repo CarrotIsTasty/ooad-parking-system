@@ -14,11 +14,18 @@ public class ParkingFloorPage extends javax.swing.JFrame {
 
     private final VehicleType type;
     private final String plate;
+    private final String reserveTimeStamp;
+    
     public ParkingFloorPage(VehicleType type, String plate) {
+        this(type, plate, null);
+    }
+    
+    public ParkingFloorPage(VehicleType type, String plate, String reserveTimeStamp) {
         initComponents();
         this.type = type;
         this.plate = plate;
-        
+        this.reserveTimeStamp = reserveTimeStamp;
+        System.out.println("Parking Floor" + reserveTimeStamp);
         SpotPanel.setVisible(false);
         RowPanel.setVisible(false);
         FloorsPanel.setVisible(true);
@@ -28,7 +35,6 @@ public class ParkingFloorPage extends javax.swing.JFrame {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         TimeLabel.setText("Time Now: " + now.format(formatter));
         initFloorButton();
-        
     }
     
     public void initFloorButton() {
@@ -256,12 +262,16 @@ public class ParkingFloorPage extends javax.swing.JFrame {
                 "\nRow: " + selectedRow +
                 "\nSpot: " + selectedSpot;
         System.out.println(Confirmation);
-        new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true);
+        if (reserveTimeStamp != null) {
+            System.out.println("Reserve Parking");
+            new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
+        } else {
+            new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true); }
         this.dispose();
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        new ParkingPage().setVisible(true);
+        new LandingPage().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackButtonActionPerformed
 

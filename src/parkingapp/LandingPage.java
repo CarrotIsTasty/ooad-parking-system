@@ -78,7 +78,8 @@ public class LandingPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReserveParkingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReserveParkingActionPerformed
-        // TODO add your handling code here:
+        new ParkingPage(ParkingPage.Mode.RESERVE).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ReserveParkingActionPerformed
 
     private void ExitParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitParkingButtonActionPerformed
@@ -86,7 +87,7 @@ public class LandingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitParkingButtonActionPerformed
 
     private void ParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ParkingButtonActionPerformed
-        new ParkingPage().setVisible(true);
+        new ParkingPage(ParkingPage.Mode.PARKING).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ParkingButtonActionPerformed
 

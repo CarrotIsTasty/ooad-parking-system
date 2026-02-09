@@ -12,16 +12,23 @@ public class ParkingSummary extends javax.swing.JFrame {
     private final int selectedFloor;
     private final int selectedRow;
     private final int selectedSpot;
+    private final String reserveTimeStamp;
     private JPanel ParkingSummaryButtonPanel;
     private JPanel ParkingSummaryTicketPanel;
     private JPanel ParkingSummaryTicketButtonPanel;
     
-    public ParkingSummary(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot) {
+    public ParkingSummary(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot){
+        this(type, plate, selectedFloor, selectedRow, selectedSpot, null);
+    }
+    
+    public ParkingSummary(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot, String reserveTimeStamp) {
+        this.reserveTimeStamp = reserveTimeStamp;
         this.type = type;
         this.plate = plate;
         this.selectedFloor = selectedFloor;
         this.selectedRow = selectedRow;
         this.selectedSpot = selectedSpot;
+        System.out.println("Summary"+ reserveTimeStamp);
         initComponents();
         ParkingSummaryButtonPanel = new JPanel();
         ParkingSummaryTicketPanel = new JPanel();
@@ -32,8 +39,11 @@ public class ParkingSummary extends javax.swing.JFrame {
         initParkingSummary();
         initParkingSummaryTicket();
         
-        ParkingSummaryPanel.setVisible(true);
-        //ParkingSummaryTicketPanel.setVisible(false);       
+        ParkingSummaryPanel.setVisible(true);     
+    }
+    
+    private boolean isReserveMode(){
+        return reserveTimeStamp != null;
     }
     
     public void initParkingSummary(){
@@ -78,7 +88,14 @@ public class ParkingSummary extends javax.swing.JFrame {
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         confirmButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
-        backButton.addActionListener(e -> {new ParkingFloorPage(type, plate).setVisible(true); dispose();});
+        backButton.addActionListener(e -> {
+            if (!isReserveMode()){
+                new ParkingFloorPage(type, plate, reserveTimeStamp).setVisible(true);
+            } else {
+                new ParkingFloorPage(type, plate).setVisible(true);
+            }
+            dispose();
+        });
         confirmButton.addActionListener(e -> {
             ParkingSummaryPanel.removeAll(); 
             initParkingSummaryTicket();
@@ -94,7 +111,7 @@ public class ParkingSummary extends javax.swing.JFrame {
     public void initParkingSummaryTicket(){
         ParkingSummaryTicketPanel.removeAll(); 
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10));
-        String ticketID = plate + "-Time";
+        String ticketID = "T-"+ plate + "-Time";
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);

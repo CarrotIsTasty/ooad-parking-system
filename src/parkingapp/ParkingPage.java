@@ -8,13 +8,31 @@ import javax.swing.*;
 
 public class ParkingPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
-    public ParkingPage() {
+    
+    public enum Mode {PARKING, RESERVE}
+    private final Mode mode;
+    
+    public ParkingPage(Mode mode) {
         initComponents();
+        this.mode = mode;
         LocalTime now = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         TimeLabel.setText("Time Now: " + now.format(formatter));
+        applyMode();
     }
-
+    
+        private void applyMode() {
+            if (mode == Mode.RESERVE) {
+                ReverseTimeComboBox.setVisible(true);
+                ReserveLabel.setVisible(true);
+            } else {
+                ReverseTimeComboBox.setVisible(false);
+                ReserveLabel.setVisible(false);
+            }
+            this.revalidate();
+            this.repaint();           
+        }
+           
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -26,6 +44,8 @@ public class ParkingPage extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         NextButton = new javax.swing.JButton();
         CloseButton = new javax.swing.JButton();
+        ReverseTimeComboBox = new javax.swing.JComboBox<>();
+        ReserveLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,6 +75,11 @@ public class ParkingPage extends javax.swing.JFrame {
             }
         });
 
+        ReverseTimeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        ReserveLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        ReserveLabel.setText("Reserve Time:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -65,16 +90,19 @@ public class ParkingPage extends javax.swing.JFrame {
                 .addGap(175, 175, 175))
             .addGroup(layout.createSequentialGroup()
                 .addGap(211, 211, 211)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(CloseButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(NextButton))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel1)
-                        .addComponent(VehicleTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(PlateNumberFormatText, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ReserveLabel)
+                    .addComponent(ReverseTimeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(CloseButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(NextButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1)
+                            .addComponent(VehicleTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PlateNumberFormatText, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -90,11 +118,15 @@ public class ParkingPage extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PlateNumberFormatText, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ReserveLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ReverseTimeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(NextButton)
                     .addComponent(CloseButton))
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         pack();
@@ -118,7 +150,13 @@ public class ParkingPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a vehicle type and enter plate number.");
             return;
         }
-        new ParkingFloorPage(type, plate).setVisible(true);
+        String timeStamp = (String) ReverseTimeComboBox.getSelectedItem();
+        System.out.println(timeStamp);
+        if (mode == Mode.RESERVE) {
+            new ParkingFloorPage(type, plate, timeStamp).setVisible(true);
+        } else {
+            new ParkingFloorPage(type, plate).setVisible(true);
+        }
         this.dispose();
     }//GEN-LAST:event_NextButtonActionPerformed
 
@@ -154,7 +192,7 @@ public class ParkingPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ParkingPage().setVisible(true);
+                new ParkingPage(Mode.PARKING).setVisible(true);
             }
         });
     }
@@ -163,6 +201,8 @@ public class ParkingPage extends javax.swing.JFrame {
     private javax.swing.JButton CloseButton;
     private javax.swing.JButton NextButton;
     private javax.swing.JFormattedTextField PlateNumberFormatText;
+    private javax.swing.JLabel ReserveLabel;
+    private javax.swing.JComboBox<String> ReverseTimeComboBox;
     private javax.swing.JLabel TimeLabel;
     private javax.swing.JComboBox<String> VehicleTypeComboBox;
     private javax.swing.JLabel jLabel1;
