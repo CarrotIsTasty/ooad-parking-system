@@ -94,7 +94,8 @@ public class LandingPage extends javax.swing.JFrame {
     }//GEN-LAST:event_ReserveParkingActionPerformed
 
     private void ExitParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitParkingButtonActionPerformed
-        // TODO add your handling code here:
+        new ParkingPage(ParkingPage.Mode.EXIT).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ExitParkingButtonActionPerformed
 
     private void ParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ParkingButtonActionPerformed

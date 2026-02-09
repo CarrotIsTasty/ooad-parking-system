@@ -46,7 +46,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         return reserveTimeStamp != null;
     }
     
-    public void initParkingSummary(){
+    private void initParkingSummary(){
         ParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
         JLabel VehicleTypeLabel = new JLabel("Vehicle Type    : " + type);
         VehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -88,7 +88,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryPanel.repaint();
     }
     
-    public void initParkingSummaryButton(){
+    private void initParkingSummaryButton(){
         ParkingSummaryButtonPanel.setLayout(new GridLayout(0, 2, 10, 10));
         JButton backButton = new JButton("Back");
         JButton confirmButton = new JButton("Confirm");
@@ -117,7 +117,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryButtonPanel.add(confirmButton);
     }
     
-    public void initParkingSummaryTicket(){
+    private void initParkingSummaryTicket(){
         ParkingSummaryTicketPanel.removeAll(); 
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10));
         String ticketID = "T-"+ plate + "-Time";
@@ -166,7 +166,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.repaint();
     }
     
-    public void initParkingSummaryTicketButton(){
+    private void initParkingSummaryTicketButton(){
         ParkingSummaryTicketButtonPanel.removeAll();
         ParkingSummaryTicketButtonPanel.setLayout(new GridLayout(0, 2, 10, 10));
         JButton backButton = new JButton("Exit");

@@ -1,6 +1,5 @@
 package parkingapp;
 
-import java.awt.CardLayout;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
@@ -9,7 +8,7 @@ import javax.swing.*;
 public class ParkingPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
     
-    public enum Mode {PARKING, RESERVE}
+    public enum Mode {PARKING, RESERVE, EXIT}
     private final Mode mode;
     
     public ParkingPage(Mode mode) {
@@ -25,10 +24,16 @@ public class ParkingPage extends javax.swing.JFrame {
             if (mode == Mode.RESERVE) {
                 ReverseTimeComboBox.setVisible(true);
                 ReserveLabel.setVisible(true);
-            } else {
+            } else if (mode == Mode.PARKING){
                 ReverseTimeComboBox.setVisible(false);
                 ReserveLabel.setVisible(false);
+            } else if (mode == Mode.EXIT){
+                ReverseTimeComboBox.setVisible(false);
+                ReserveLabel.setVisible(false);
+                VehicleTypeComboBox.setVisible(false);
+                VehicleTypeLabel.setVisible(false);
             }
+            
             this.revalidate();
             this.repaint();           
         }
@@ -39,7 +44,7 @@ public class ParkingPage extends javax.swing.JFrame {
 
         TimeLabel = new javax.swing.JLabel();
         VehicleTypeComboBox = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
+        VehicleTypeLabel = new javax.swing.JLabel();
         PlateNumberFormatText = new javax.swing.JFormattedTextField();
         jLabel2 = new javax.swing.JLabel();
         NextButton = new javax.swing.JButton();
@@ -55,8 +60,8 @@ public class ParkingPage extends javax.swing.JFrame {
         VehicleTypeComboBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         VehicleTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEDAN", "SUV", "TRUCK", "MOTOCYCLE", "BICYCLE", "HANDICAPPED VEHICLE" }));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Vehicle Type:");
+        VehicleTypeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        VehicleTypeLabel.setText("Vehicle Type:");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Plate Number: ");
@@ -100,7 +105,7 @@ public class ParkingPage extends javax.swing.JFrame {
                             .addComponent(NextButton))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel1)
+                            .addComponent(VehicleTypeLabel)
                             .addComponent(VehicleTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(PlateNumberFormatText, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -111,7 +116,7 @@ public class ParkingPage extends javax.swing.JFrame {
                 .addGap(118, 118, 118)
                 .addComponent(TimeLabel)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addComponent(VehicleTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(VehicleTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -154,8 +159,10 @@ public class ParkingPage extends javax.swing.JFrame {
         System.out.println(timeStamp);
         if (mode == Mode.RESERVE) {
             new ParkingFloorPage(type, plate, timeStamp).setVisible(true);
-        } else {
+        } else if (mode == Mode.PARKING){
             new ParkingFloorPage(type, plate).setVisible(true);
+        } else if (mode == Mode.EXIT){
+            //new ParkingSummary(plate).setVisible(true);
         }
         this.dispose();
     }//GEN-LAST:event_NextButtonActionPerformed
@@ -205,7 +212,7 @@ public class ParkingPage extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> ReverseTimeComboBox;
     private javax.swing.JLabel TimeLabel;
     private javax.swing.JComboBox<String> VehicleTypeComboBox;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel VehicleTypeLabel;
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
