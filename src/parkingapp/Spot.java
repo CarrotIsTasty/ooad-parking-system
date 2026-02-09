@@ -15,6 +15,14 @@ public class Spot {
     private SpotType spotType;
     private SpotStatus status;
     
+    public Spot(){
+       
+    }
+    
+    public Spot(int id){
+        
+    }
+    
     public Spot(Row row, int spotNumber, SpotType spotType, SpotStatus status) {
         this.row = row;
         this.spotNumber = spotNumber;

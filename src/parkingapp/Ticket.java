@@ -12,8 +12,11 @@ public class Ticket extends Payable {
     private double totalFee;
     private Payment payment;
     
+    
     public int getDuration(){return (exitTime.getHour()-createdAt.getHour());}
+    
     public Payment getPayment(){return payment;}
+    
     public void setPayment(Payment payment){
         this.payment = payment;
     }
