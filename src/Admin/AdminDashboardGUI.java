@@ -12,6 +12,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import javax.swing.border.TitledBorder;
 import Config.FileConfigurationService;
+import java.io.IOException;
 
 /**
  *
@@ -36,6 +37,16 @@ public class AdminDashboardGUI extends JFrame {
         this.connection = connection;
         this.adminName = adminName;
         this.config = FileConfigurationService.getInstance("./config.ini", false);
+
+        try {
+            boolean alreadyInitialized = this.config.load();
+            if (!alreadyInitialized) {
+                this.config.set("fineStrategy", "FIXED");
+                this.config.save();
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
 
         initComponents();
         loadInitialData();
@@ -178,17 +189,14 @@ public class AdminDashboardGUI extends JFrame {
 
     private JPanel createFineSchemePanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
-        
-        
+
         return panel;
     }
-    
+
     // TODO put this method in combobox for fine.
 //    this.config.set("fineStrategy", valueFromCombobox);
-    
     // TODO put this method in save button.
 //    this.config.save();
-
     private void logout() {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to logout?",

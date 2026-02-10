@@ -38,7 +38,7 @@ public class FileConfigurationService implements ConfigurationService {
     }
     
     public static FileConfigurationService getInstance(String filePath, boolean autoSave) {
-        if (FileConfigurationService.instance != null) 
+        if (FileConfigurationService.instance == null) 
             FileConfigurationService.instance = new FileConfigurationService(filePath, autoSave);
         else
             FileConfigurationService.instance.setAutoSave(autoSave);
