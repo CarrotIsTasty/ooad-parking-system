@@ -4,6 +4,8 @@
  */
 package strategy;
 
+import Config.FileConfigurationService;
+
 public class FineContext {
     private FineCalculationStrategy strategy;
     
@@ -11,6 +13,28 @@ public class FineContext {
         this.strategy = strategy;
     }
     
+    public FineContext() {
+        FileConfigurationService config = FileConfigurationService.getInstance("./config.ini");
+        String strategyName = config.getString("fineStrategy", "FIXED");
+        
+        switch (strategyName) {
+            case "FIXED":
+                this.strategy = new FixedFineStrategy();
+                break;
+            
+            case "HOURLY":
+                this.strategy = new HourlyFineStrategy();
+                break;
+            
+            case "PROGRESSIVE":
+                this.strategy = new ProgressiveFineStrategy();
+                break;
+            
+            default:
+                this.strategy = new FixedFineStrategy();
+        }
+    }
+
     public void setStrategy(FineCalculationStrategy strategy) {
         this.strategy = strategy;
     }
