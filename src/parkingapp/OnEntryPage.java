@@ -78,7 +78,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         TimeLabel.setText("Time: ");
 
         VehicleTypeComboBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        VehicleTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SEDAN", "SUV", "TRUCK", "MOTOCYCLE", "BICYCLE", "HANDICAPPED VEHICLE" }));
+        VehicleTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CAR", "SUV", "TRUCK", "MOTOCYCLE", "BICYCLE", "HANDICAPPED VEHICLE" }));
 
         VehicleTypeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         VehicleTypeLabel.setText("Vehicle Type:");

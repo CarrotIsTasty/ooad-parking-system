@@ -5,7 +5,13 @@ import java.time.format.DateTimeFormatter;
 
 public class TestingPage {
     public static void main(String[] args) {
-        ReserveHourTest();
+        ConvertTicketID();
+    }
+    
+    public static void ConvertTicketID() {
+        String entry = "2026-02-10 14:20"; 
+        String result = entry.replace(" ", "-");
+        System.out.println(result);
     }
     
     public static void ReserveHourTest() {

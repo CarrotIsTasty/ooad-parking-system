@@ -7,6 +7,7 @@ import javax.swing.*;
 
 public class ParkingSummaryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private LocalDateTime entryTime;
     private final VehicleType type;
     private final String plate;
     private final int selectedFloor;
@@ -35,10 +36,10 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryTicketButtonPanel = new JPanel();
         LocalDateTime now = LocalDateTime.now();
         TimeLabel.setText("Time Now: " + now.format(timeFmt));
+        this.entryTime = LocalDateTime.now();
         System.out.println(timeFmt);
         initParkingSummary();
         initParkingSummaryTicket();
-        
         ParkingSummaryPanel.setVisible(true);     
     }
     
@@ -111,13 +112,21 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         confirmButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you confirm parking at this spot?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
+            String ticketID;
             //----- Save Start Here -----//
-            LocalDateTime now = LocalDateTime.now();
-            String entryTime = now.format(timeFmt);
             if (isReserveMode()) {
-                System.out.println("Saving into DB...\nVehicle DB: " + plate + ", " + type + ", " + entryTime + ", exitTime(null) ," + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot + ", " + reserveTimeStamp);
+                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + reserveTimeStamp + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                //Save to Ticket Database 
+                ticketID = CreateTicketID(reserveTimeStamp);
+                //save ticketID.... into TicketDatabase
+                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = reserveTimeStap where ID = F1-R1-S1
             } else if (!isReserveMode()) {
-                System.out.println("Saving into DB...\nVehicle DB: " + plate + ", " + type + ", " + entryTime + ", exitTime(null) ," + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + entryTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                //Save to Ticket Database 
+                String convertTime = ConvertTime(entryTime.toString());
+                ticketID = CreateTicketID(convertTime);
+                //save ticketID.... into TicketDatabase
+                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = entryTime where ID = FX-RX-SX
             }
             //----- Save End Here -----//
             ParkingSummaryPanel.removeAll(); 
@@ -131,9 +140,19 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryButtonPanel.add(confirmButton);
     }
     
+    private static String ConvertTime(String time) {
+        return time.replace(" ", "-");
+    }
+    
+    private String CreateTicketID(String time){
+        String convertedTime = ConvertTime(time);
+        return "T-"+ plate + "-" + convertedTime;
+    }
+    //Display Paking Summary After Confirming Parking Spot 
     private void initParkingSummaryTicket(){
         ParkingSummaryTicketPanel.removeAll(); 
-        ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10));
+        ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10)); 
+        //IDK how to pass the ticket id to here
         String ticketID = "T-"+ plate + "-Time";
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -197,6 +216,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         });
         confirmButton.addActionListener(e -> {
             System.out.println("Downloading Ticket..."); 
+            //generateTicket(); to T-PLATE-TIME.txt
             new StartPage().setVisible(true);dispose();
         });
         

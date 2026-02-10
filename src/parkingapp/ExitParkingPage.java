@@ -30,7 +30,9 @@ public class ExitParkingPage extends javax.swing.JFrame {
     //Show Parking Fee Summary Before Payment
     private void initParkingFeeSummary() {
         ParkingFeeSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
-        
+        //--- Retrieve TicketID from Ticket
+        //--- Retrieve Entry Time, Plate, SpotID from vehicles
+        //--- Retrieve Amount from fines
         String ticketID = "T-"+ plate + "-Time";
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -213,10 +215,13 @@ public class ExitParkingPage extends javax.swing.JFrame {
             method = PaymentMethod.CARD;
             String amount = paymentField.getText();
             //payableAmount = (double)paymentField.getValue();
+            //if payableAmount >= parkingFee then start saving else inform user please pay full amount parking fee
             //----- Save Start Here -----//
+            //Save payment to db plate, amount, parkingfee, fineamount, paymentmethod, payment time, ticketid
             LocalDateTime now = LocalDateTime.now();
             String exitTime = now.format(timeFmt);
             System.out.println("Updating into DB...\nVehicle DB: " + plate + ", " + exitTime);
+            //Set parkingspot isavailable = 1, current vehicle = null, entrytime = null where ID = FX-RX-SX
             //----- Save End Here -----//
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
@@ -296,9 +301,11 @@ public class ExitParkingPage extends javax.swing.JFrame {
             String amount = paymentField.getText();
             //payableAmount = (double)paymentField.getValue();
             //----- Save Start Here -----//
+            
             LocalDateTime now = LocalDateTime.now();
             String exitTime = now.format(timeFmt);
             System.out.println("Updating into DB...\nVehicle DB: " + plate + ", " + exitTime);
+            //Set parkingspot isavailable = 1, current vehicle = null, entrytime = null where ID = FX-RX-SX
             //----- Save End Here -----//
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
