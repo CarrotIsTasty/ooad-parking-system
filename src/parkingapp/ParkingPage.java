@@ -147,7 +147,7 @@ public class ParkingPage extends javax.swing.JFrame {
         int typeIndex = VehicleTypeComboBox.getSelectedIndex();
         VehicleType type;
         switch (typeIndex) {
-            case 0: type = VehicleType.SEDAN; break;
+            case 0: type = VehicleType.CAR; break;
             case 1: type = VehicleType.SUV; break;
             case 2: type = VehicleType.TRUCK; break;
             case 3: type = VehicleType.MOTORCYCLE; break;

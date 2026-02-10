@@ -72,9 +72,9 @@ public class Spot {
         
         switch (spotType) {
             case COMPACT:
-                return vType == VehicleType.MOTORCYCLE || vType == VehicleType.BICYCLE || vType == VehicleType.SEDAN;
+                return vType == VehicleType.MOTORCYCLE || vType == VehicleType.BICYCLE || vType == VehicleType.CAR;
             case REGULAR:
-                return vType == VehicleType.SEDAN || vType == VehicleType.SUV || vType == VehicleType.TRUCK;
+                return vType == VehicleType.CAR || vType == VehicleType.SUV || vType == VehicleType.TRUCK;
             default:
                 return false;
         }

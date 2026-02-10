@@ -256,7 +256,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         //</editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ParkingSummary(VehicleType.SEDAN, "TEST123", 1, 1, 1).setVisible(true);
+                new ParkingSummary(VehicleType.CAR, "TEST123", 1, 1, 1).setVisible(true);
             }
         });
     }
