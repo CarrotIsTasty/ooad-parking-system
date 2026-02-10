@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import Database.DatabaseManager;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 public class ParkingFloorPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
@@ -107,17 +109,21 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     public void initSpotButton(int floorNumber, int rowNumber) {
         SpotPanel.setLayout(new GridLayout(0, 3, 10, 10));
         DatabaseManager db = DatabaseManager.getInstance();
-        int totalSpot = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type).size();
-
+        //int totalSpot = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type).size();
+        List<Integer> availableSpots = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type);
+        
         SpotPanel.removeAll();
 
-        for (int i = 1; i <= totalSpot; i++) {
-            JButton spotBtn = new JButton("Spot " + i);
-            int spotNumber = i;
+        for (Integer spotNumber : availableSpots) {
+            JButton spotBtn = new JButton("Spot " + spotNumber);
 
             spotBtn.addActionListener(e -> {
                 selectedSpot = spotNumber;
-                System.out.println("Floor " + floorNumber + ", Row " + rowNumber + ", Spot " + spotNumber);
+                System.out.println(
+                        "Floor " + floorNumber
+                        + ", Row " + rowNumber
+                        + ", Spot " + spotNumber
+                );
                 SelectedSpotLabel.setText("Selected Spot: " + spotNumber);
                 ConfirmButton.setEnabled(true);
             });
@@ -260,12 +266,6 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmButtonActionPerformed
-        String Confirmation = "Vehicle: " + type.toString() +
-                "\nPlate: " + plate +
-                "\nFloor: " + selectedFloor +
-                "\nRow: " + selectedRow +
-                "\nSpot: " + selectedSpot;
-        System.out.println(Confirmation);
         if (reserveTimeStamp != null) {
             System.out.println("Reserve Parking");
             new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
@@ -275,33 +275,15 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
+        int result = JOptionPane.showConfirmDialog(this,"Do you want to go back?","Confirmation Dialog",JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.NO_OPTION) {
+            return;
+        }
         new LandingPage().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackButtonActionPerformed
 
     public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ParkingFloorPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ParkingFloorPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ParkingFloorPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ParkingFloorPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ParkingFloorPage(VehicleType.CAR, "TEST123").setVisible(true);

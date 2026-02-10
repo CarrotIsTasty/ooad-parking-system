@@ -98,14 +98,19 @@ public class ParkingSummary extends javax.swing.JFrame {
         
         backButton.addActionListener(e -> {
             System.out.println("back button " + reserveTimeStamp);
+            int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (isReserveMode()){
+                if (result == JOptionPane.NO_OPTION) {return;}
                 new ParkingFloorPage(type, plate, reserveTimeStamp).setVisible(true);
             } else {
+                if (result == JOptionPane.NO_OPTION) {return;}
                 new ParkingFloorPage(type, plate).setVisible(true);
             }
             dispose();
         });
         confirmButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(this, "Do you confirm parking at this spot?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.NO_OPTION) {return;}
             ParkingSummaryPanel.removeAll(); 
             initParkingSummaryTicket();
             ParkingSummaryPanel.add(ParkingSummaryTicketPanel); 
@@ -175,8 +180,16 @@ public class ParkingSummary extends javax.swing.JFrame {
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         confirmButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
-        backButton.addActionListener(e -> {new LandingPage().setVisible(true); dispose();});
-        confirmButton.addActionListener(e -> {System.out.println("Downloading Ticket..."); new LandingPage().setVisible(true);dispose();});
+        backButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?\nRemember to download your parking Ticket.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.NO_OPTION) {return;}
+            new LandingPage().setVisible(true); 
+            dispose();
+        });
+        confirmButton.addActionListener(e -> {
+            System.out.println("Downloading Ticket..."); 
+            new LandingPage().setVisible(true);dispose();
+        });
         
         ParkingSummaryTicketButtonPanel.add(backButton);
         ParkingSummaryTicketButtonPanel.add(confirmButton);
@@ -233,27 +246,6 @@ public class ParkingSummary extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void main(String args[]) {
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ParkingSummary.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ParkingSummary.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ParkingSummary.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ParkingSummary.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ParkingSummary(VehicleType.CAR, "TEST123", 1, 1, 1).setVisible(true);
