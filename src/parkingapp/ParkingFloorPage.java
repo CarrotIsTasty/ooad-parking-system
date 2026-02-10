@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
+import Database.DatabaseManager;
 
 public class ParkingFloorPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
@@ -39,7 +40,8 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     
     public void initFloorButton() {
         FloorsPanel.setLayout(new GridLayout(0, 1, 10, 10));
-        int totalFloors = 5;
+        DatabaseManager db = DatabaseManager.getInstance();
+        int totalFloors = db.getFloorsByVehicleType(this.type).size();
 
         FloorsPanel.removeAll();
 
@@ -73,7 +75,8 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     
     public void initRowButton(int floorNumber) {
         RowPanel.setLayout(new GridLayout(0, 2, 10, 10));
-        int totalRow = 6;
+        DatabaseManager db = DatabaseManager.getInstance();
+        int totalRow = db.getRowsByFloorAndVehicleType(floorNumber, this.type).size();
 
         RowPanel.removeAll();
 
@@ -103,7 +106,8 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     
     public void initSpotButton(int floorNumber, int rowNumber) {
         SpotPanel.setLayout(new GridLayout(0, 3, 10, 10));
-        int totalSpot = 3;
+        DatabaseManager db = DatabaseManager.getInstance();
+        int totalSpot = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type).size();
 
         SpotPanel.removeAll();
 
