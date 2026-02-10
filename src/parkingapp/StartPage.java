@@ -1,9 +1,9 @@
 
 package parkingapp;
 
-public class LandingPage extends javax.swing.JFrame {
+public class StartPage extends javax.swing.JFrame {
 
-    public LandingPage() {
+    public StartPage() {
         initComponents();
     }
 
@@ -89,17 +89,17 @@ public class LandingPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReserveParkingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReserveParkingActionPerformed
-        new ParkingPage(ParkingPage.Mode.RESERVE).setVisible(true);
+        new OnEntryPage(OnEntryPage.Mode.RESERVE).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ReserveParkingActionPerformed
 
     private void ExitParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitParkingButtonActionPerformed
-        new ParkingPage(ParkingPage.Mode.EXIT).setVisible(true);
+        new OnEntryPage(OnEntryPage.Mode.EXIT).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ExitParkingButtonActionPerformed
 
     private void ParkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ParkingButtonActionPerformed
-        new ParkingPage(ParkingPage.Mode.PARKING).setVisible(true);
+        new OnEntryPage(OnEntryPage.Mode.PARKING).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ParkingButtonActionPerformed
 
@@ -110,7 +110,7 @@ public class LandingPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LandingPage().setVisible(true);
+                new StartPage().setVisible(true);
             }
         });
     }

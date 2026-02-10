@@ -1,12 +1,12 @@
 package parkingapp;
 
 import java.awt.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 
-public class ParkingSummary extends javax.swing.JFrame {
-    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+public class ParkingSummaryPage extends javax.swing.JFrame {
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final VehicleType type;
     private final String plate;
     private final int selectedFloor;
@@ -17,11 +17,11 @@ public class ParkingSummary extends javax.swing.JFrame {
     private JPanel ParkingSummaryTicketPanel;
     private JPanel ParkingSummaryTicketButtonPanel;
     
-    public ParkingSummary(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot){
+    public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot){
         this(type, plate, selectedFloor, selectedRow, selectedSpot, null);
     }
     
-    public ParkingSummary(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot, String reserveTimeStamp) {
+    public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot, String reserveTimeStamp) {
         this.reserveTimeStamp = reserveTimeStamp;
         this.type = type;
         this.plate = plate;
@@ -33,9 +33,9 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryButtonPanel = new JPanel();
         ParkingSummaryTicketPanel = new JPanel();
         ParkingSummaryTicketButtonPanel = new JPanel();
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        TimeLabel.setText("Time Now: " + now.format(formatter));
+        LocalDateTime now = LocalDateTime.now();
+        TimeLabel.setText("Time Now: " + now.format(timeFmt));
+        System.out.println(timeFmt);
         initParkingSummary();
         initParkingSummaryTicket();
         
@@ -101,16 +101,25 @@ public class ParkingSummary extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (isReserveMode()){
                 if (result == JOptionPane.NO_OPTION) {return;}
-                new ParkingFloorPage(type, plate, reserveTimeStamp).setVisible(true);
+                new AvailableParkingPage(type, plate, reserveTimeStamp).setVisible(true);
             } else {
                 if (result == JOptionPane.NO_OPTION) {return;}
-                new ParkingFloorPage(type, plate).setVisible(true);
+                new AvailableParkingPage(type, plate).setVisible(true);
             }
             dispose();
         });
         confirmButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you confirm parking at this spot?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
+            //----- Save Start Here -----//
+            LocalDateTime now = LocalDateTime.now();
+            String entryTime = now.format(timeFmt);
+            if (isReserveMode()) {
+                System.out.println("Saving into DB...\nVehicle DB: " + plate + ", " + type + ", " + entryTime + ", exitTime(null) ," + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot + ", " + reserveTimeStamp);
+            } else if (!isReserveMode()) {
+                System.out.println("Saving into DB...\nVehicle DB: " + plate + ", " + type + ", " + entryTime + ", exitTime(null) ," + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+            }
+            //----- Save End Here -----//
             ParkingSummaryPanel.removeAll(); 
             initParkingSummaryTicket();
             ParkingSummaryPanel.add(ParkingSummaryTicketPanel); 
@@ -163,7 +172,7 @@ public class ParkingSummary extends javax.swing.JFrame {
             ReserverTimpStampLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             ReserverTimpStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
             ParkingSummaryTicketPanel.add(ReserverTimpStampLabel);
-        }
+        } else if (!isReserveMode()) {}
         
         ParkingSummaryTicketPanel.add(ParkingSummaryTicketButtonPanel);
         
@@ -183,12 +192,12 @@ public class ParkingSummary extends javax.swing.JFrame {
         backButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?\nRemember to download your parking Ticket.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
-            new LandingPage().setVisible(true); 
+            new StartPage().setVisible(true); 
             dispose();
         });
         confirmButton.addActionListener(e -> {
             System.out.println("Downloading Ticket..."); 
-            new LandingPage().setVisible(true);dispose();
+            new StartPage().setVisible(true);dispose();
         });
         
         ParkingSummaryTicketButtonPanel.add(backButton);
@@ -211,7 +220,7 @@ public class ParkingSummary extends javax.swing.JFrame {
         ParkingSummaryPanel.setLayout(ParkingSummaryPanelLayout);
         ParkingSummaryPanelLayout.setHorizontalGroup(
             ParkingSummaryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 610, Short.MAX_VALUE)
         );
         ParkingSummaryPanelLayout.setVerticalGroup(
             ParkingSummaryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,13 +232,13 @@ public class ParkingSummary extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(180, Short.MAX_VALUE)
-                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(145, 145, 145))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(ParkingSummaryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(85, 85, 85)
+                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -248,7 +257,7 @@ public class ParkingSummary extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ParkingSummary(VehicleType.CAR, "TEST123", 1, 1, 1).setVisible(true);
+                new ParkingSummaryPage(VehicleType.CAR, "TEST123", 1, 1, 1).setVisible(true);
             }
         });
     }

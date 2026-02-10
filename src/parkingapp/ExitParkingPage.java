@@ -1,13 +1,17 @@
 package parkingapp;
 
 import java.awt.*;
-import java.time.LocalTime;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 
 public class ExitParkingPage extends javax.swing.JFrame {
     private final String plate;
+    private double payableAmount;
     private PaymentMethod method;
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private JPanel ParkingFeeSummaryButtonPanel;
     private JPanel ParkingPaymentPanel;
     private JPanel CompletedPaymentParkingSummaryPanel;
@@ -19,9 +23,8 @@ public class ExitParkingPage extends javax.swing.JFrame {
         ParkingFeeSummaryButtonPanel = new JPanel();
         initParkingFeeSummary();
         ParkingFeeSummaryPanel.setVisible(true);
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        TimeLabel.setText("Time Now: " + now.format(formatter));
+        LocalDateTime now = LocalDateTime.now();
+        TimeLabel.setText("Time Now: " + now.format(timeFmt));
     }
     
     //Show Parking Fee Summary Before Payment
@@ -33,17 +36,13 @@ public class ExitParkingPage extends javax.swing.JFrame {
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel vehicleTypeLabel = new JLabel("Vehicle Type    : ");
-        vehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        vehicleTypeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel entryExitTimeLabel = new JLabel("Entry Time :    Exit Time:");
+        entryExitTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        entryExitTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel plateNumberLabel = new JLabel("Plate Number  : " + plate);
         plateNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         plateNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JLabel floorLabel = new JLabel("Floor Number : ");
-        floorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        floorLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel parkingSpotLabel = new JLabel("Parking Spot  : F-R-S");
         parkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -72,9 +71,8 @@ public class ExitParkingPage extends javax.swing.JFrame {
         initParkingFeeSummaryButton();
         
         ParkingFeeSummaryPanel.add(TicketIDLabel);
-        ParkingFeeSummaryPanel.add(vehicleTypeLabel);
+        ParkingFeeSummaryPanel.add(entryExitTimeLabel);
         ParkingFeeSummaryPanel.add(plateNumberLabel);
-        ParkingFeeSummaryPanel.add(floorLabel);
         ParkingFeeSummaryPanel.add(parkingSpotLabel);
         ParkingFeeSummaryPanel.add(parkingRateLabel);
         
@@ -100,7 +98,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
         payButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
         backButton.addActionListener(e -> {
-            new ParkingPage(ParkingPage.Mode.EXIT).setVisible(true);
+            new OnEntryPage(OnEntryPage.Mode.EXIT).setVisible(true);
             dispose();
         });
         payButton.addActionListener(e -> {
@@ -154,6 +152,17 @@ public class ExitParkingPage extends javax.swing.JFrame {
         JTextField numberField = new JTextField();
         JTextField expiryField = new JTextField();
         JPasswordField cvvField = new JPasswordField();
+        
+        
+        NumberFormat format = NumberFormat.getNumberInstance(); 
+        format.setMinimumFractionDigits(2); 
+        format.setMaximumFractionDigits(2);
+        
+        NumberFormatter formatter = new NumberFormatter(format); 
+        formatter.setAllowsInvalid(false); 
+        formatter.setMinimum(0.00);
+
+        JFormattedTextField paymentField = new JFormattedTextField();
 
         form.add(new JLabel("Name on Card:"));
         form.add(nameField);
@@ -166,6 +175,9 @@ public class ExitParkingPage extends javax.swing.JFrame {
 
         form.add(new JLabel("CVV:"));
         form.add(cvvField);
+        
+        form.add(new JLabel("Amount Pay: RM"));
+        form.add(paymentField);
 
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -185,9 +197,27 @@ public class ExitParkingPage extends javax.swing.JFrame {
         p.add(btnRow);
 
         payBtn.addActionListener(e -> {
+            //Check Payments
+            String text = paymentField.getText().trim();
+            if (text.isEmpty()) {JOptionPane.showMessageDialog(p, "Please enter an amount to pay."); return;
+            } else {
+                try {
+                    double amount = Double.parseDouble(text);
+                    if (amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00");  return;} 
+                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(amount));}
+                } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(p, "Invalid amount format. Please use 0.00");  return;}
+            }
+            
             int result = JOptionPane.showConfirmDialog(this, "Confirm Payment,\nPayments are not refundable.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
             method = PaymentMethod.CARD;
+            String amount = paymentField.getText();
+            //payableAmount = (double)paymentField.getValue();
+            //----- Save Start Here -----//
+            LocalDateTime now = LocalDateTime.now();
+            String exitTime = now.format(timeFmt);
+            System.out.println("Updating into DB...\nVehicle DB: " + plate + ", " + exitTime);
+            //----- Save End Here -----//
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
             ParkingPaymentPanel.add(CompletedPaymentParkingSummaryPanel);
@@ -211,21 +241,31 @@ public class ExitParkingPage extends javax.swing.JFrame {
         title.setFont(new Font("Segoe UI", Font.BOLD, 16));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JTextArea instructions = new JTextArea(
-            "1) Proceed to the cashier machine.\n" +
-            "2) Tell them your plate number.\n" +
-            "3) Pay the amount shown.\n" +
-            "4) Keep the receipt to exit."
-        );
+        JTextArea instructions = new JTextArea("Please enter the payable cash amount");
+ 
         instructions.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         instructions.setEditable(false);
         instructions.setOpaque(false);
         instructions.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        NumberFormat format = NumberFormat.getNumberInstance();
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(2);
+
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setAllowsInvalid(false);
+        formatter.setMinimum(0.00);
+        JFormattedTextField paymentField = new JFormattedTextField();
+        paymentField.setPreferredSize(new Dimension(200, 25));
+        paymentField.setMaximumSize(new Dimension(200, 25));
+        JPanel amountRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        amountRow.add(new JLabel("Amount Pay: RM")); 
+        amountRow.add(paymentField);
 
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JButton confirmBtn = new JButton("I Paid");
+        JButton confirmBtn = new JButton("Pay");
         JButton backBtn = new JButton("Back");
 
         btnRow.add(backBtn);
@@ -234,13 +274,32 @@ public class ExitParkingPage extends javax.swing.JFrame {
         p.add(title);
         p.add(Box.createVerticalStrut(10));
         p.add(instructions);
+        p.add(amountRow); 
+        amountRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         p.add(Box.createVerticalStrut(12));
         p.add(btnRow);
 
         confirmBtn.addActionListener(e -> {
+            String text = paymentField.getText().trim();
+            if (text.isEmpty()) {JOptionPane.showMessageDialog(p, "Please enter an amount to pay."); return;
+            } else {
+                try {
+                    double amount = Double.parseDouble(text);
+                    if (amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00"); return;} 
+                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(amount));}
+                } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(p, "Invalid amount format. Please use 0.00"); return;}
+            }
+            
             int result = JOptionPane.showConfirmDialog(this, "Confirm Payment,\nPayments are not refundable.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
             method = PaymentMethod.CASH;
+            String amount = paymentField.getText();
+            //payableAmount = (double)paymentField.getValue();
+            //----- Save Start Here -----//
+            LocalDateTime now = LocalDateTime.now();
+            String exitTime = now.format(timeFmt);
+            System.out.println("Updating into DB...\nVehicle DB: " + plate + ", " + exitTime);
+            //----- Save End Here -----//
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
             ParkingPaymentPanel.add(CompletedPaymentParkingSummaryPanel);
@@ -269,25 +328,17 @@ public class ExitParkingPage extends javax.swing.JFrame {
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel vehicleTypeLabel = new JLabel("Vehicle Type    : ");
-        vehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        vehicleTypeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel entryExitTimeLabel = new JLabel("Entry Time :    Exit Time:");
+        entryExitTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        entryExitTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel plateNumberLabel = new JLabel("Plate Number  : " + plate);
         plateNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         plateNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel floorLabel = new JLabel("Floor Number : ");
-        floorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        floorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
         JLabel parkingSpotLabel = new JLabel("Parking Spot  : F-R-S");
         parkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JLabel parkingRateLabel = new JLabel("Parking Rate  : /hour");
-        parkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        parkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JLabel parkingDurationLabel = new JLabel("Duration    : Hours");
         parkingDurationLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -301,28 +352,31 @@ public class ExitParkingPage extends javax.swing.JFrame {
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFineLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingTotalFeeLabel = new JLabel("Total Fee : RM ");
-        parkingTotalFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        parkingTotalFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel parkingTotalPaidLabel = new JLabel("Total Amount Paid : RM ");
+        parkingTotalPaidLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        parkingTotalPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JLabel methodLabel = new JLabel("Payment Method :  " + method);
         methodLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         methodLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
+        JLabel remainingBalanceLabel = new JLabel("Remaining Balance :  RM ");
+        remainingBalanceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        remainingBalanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
         initCompletedPaymentParkingSummaryButton();
         
         CompletedPaymentParkingSummaryPanel.add(ThankLabel);
         CompletedPaymentParkingSummaryPanel.add(TicketIDLabel);
-        CompletedPaymentParkingSummaryPanel.add(vehicleTypeLabel);
+        CompletedPaymentParkingSummaryPanel.add(entryExitTimeLabel);
         CompletedPaymentParkingSummaryPanel.add(plateNumberLabel);
-        CompletedPaymentParkingSummaryPanel.add(floorLabel);
         CompletedPaymentParkingSummaryPanel.add(parkingSpotLabel);
-        CompletedPaymentParkingSummaryPanel.add(parkingRateLabel);
         
         CompletedPaymentParkingSummaryPanel.add(parkingDurationLabel);
         CompletedPaymentParkingSummaryPanel.add(parkingFeeLabel);
         CompletedPaymentParkingSummaryPanel.add(parkingFineLabel);
-        CompletedPaymentParkingSummaryPanel.add(parkingTotalFeeLabel);
+        CompletedPaymentParkingSummaryPanel.add(parkingTotalPaidLabel);
+        CompletedPaymentParkingSummaryPanel.add(remainingBalanceLabel);
         CompletedPaymentParkingSummaryPanel.add(methodLabel);
           
         CompletedPaymentParkingSummaryPanel.add(CompletedPaymentParkingSummaryButtonPanel);
@@ -343,12 +397,12 @@ public class ExitParkingPage extends javax.swing.JFrame {
         closeButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?\nRemember to download your parking receipt.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
-            new LandingPage().setVisible(true);
+            new StartPage().setVisible(true);
             dispose();
         });
         downloadButton.addActionListener(e -> {
             System.out.println("Downloading...");
-            new LandingPage().setVisible(true);
+            new StartPage().setVisible(true);
             dispose();
         });
 
@@ -368,7 +422,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
         ParkingFeeSummaryPanel.setLayout(ParkingFeeSummaryPanelLayout);
         ParkingFeeSummaryPanelLayout.setHorizontalGroup(
             ParkingFeeSummaryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 610, Short.MAX_VALUE)
         );
         ParkingFeeSummaryPanelLayout.setVerticalGroup(
             ParkingFeeSummaryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -387,9 +441,9 @@ public class ExitParkingPage extends javax.swing.JFrame {
                 .addComponent(ParkingFeeSummaryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(181, Short.MAX_VALUE)
-                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(144, 144, 144))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

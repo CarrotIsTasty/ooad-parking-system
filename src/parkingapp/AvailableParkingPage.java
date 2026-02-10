@@ -2,15 +2,15 @@
 package parkingapp;
 
 import java.awt.GridLayout;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JButton;
 import Database.DatabaseManager;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-public class ParkingFloorPage extends javax.swing.JFrame {
-    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+public class AvailableParkingPage extends javax.swing.JFrame {
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private Integer selectedFloor = null;
     private Integer selectedRow = null;
     private Integer selectedSpot = null;
@@ -19,11 +19,11 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     private final String plate;
     private final String reserveTimeStamp;
     
-    public ParkingFloorPage(VehicleType type, String plate) {
+    public AvailableParkingPage(VehicleType type, String plate) {
         this(type, plate, null);
     }
     
-    public ParkingFloorPage(VehicleType type, String plate, String reserveTimeStamp) {
+    public AvailableParkingPage(VehicleType type, String plate, String reserveTimeStamp) {
         initComponents();
         this.type = type;
         this.plate = plate;
@@ -34,9 +34,8 @@ public class ParkingFloorPage extends javax.swing.JFrame {
         FloorsPanel.setVisible(true);
         
         ConfirmButton.setEnabled(false);
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        TimeLabel.setText("Time Now: " + now.format(formatter));
+        LocalDateTime now = LocalDateTime.now();
+        TimeLabel.setText("Time Now: " + now.format(timeFmt));
         initFloorButton();
     }
     
@@ -226,23 +225,22 @@ public class ParkingFloorPage extends javax.swing.JFrame {
                             .addComponent(SpotPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 166, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(153, 153, 153))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(BackButton)
-                                .addGap(117, 117, 117)
-                                .addComponent(ConfirmButton)
-                                .addGap(178, 178, 178))))))
+                        .addGap(0, 175, Short.MAX_VALUE)
+                        .addComponent(BackButton)
+                        .addGap(117, 117, 117)
+                        .addComponent(ConfirmButton)
+                        .addGap(178, 178, 178))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addComponent(TimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(65, 65, 65)
+                .addGap(63, 63, 63)
                 .addComponent(TimeLabel)
-                .addGap(4, 4, 4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SelectedFloorLabel)
                 .addGap(18, 18, 18)
                 .addComponent(FloorsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -268,9 +266,9 @@ public class ParkingFloorPage extends javax.swing.JFrame {
     private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmButtonActionPerformed
         if (reserveTimeStamp != null) {
             System.out.println("Reserve Parking");
-            new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
+            new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
         } else {
-            new ParkingSummary(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true); }
+            new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true); }
         this.dispose();
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
@@ -279,14 +277,14 @@ public class ParkingFloorPage extends javax.swing.JFrame {
         if (result == JOptionPane.NO_OPTION) {
             return;
         }
-        new LandingPage().setVisible(true);
+        new StartPage().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackButtonActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ParkingFloorPage(VehicleType.CAR, "TEST123").setVisible(true);
+                new AvailableParkingPage(VehicleType.CAR, "TEST123").setVisible(true);
             }
         });
     }
