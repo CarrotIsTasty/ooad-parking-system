@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author herbertp
  */
-public class Payable {
+public abstract class Payable {
     public Vehicle vehicle;
     public LocalDateTime createdAt;
     public double totalFee;
@@ -23,4 +23,7 @@ public class Payable {
     public void setPayment(Payment payment){
         this.payment = payment;
     }
+    
+    
+    public abstract double calculateFees();
 }

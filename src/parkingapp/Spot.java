@@ -19,8 +19,8 @@ public class Spot {
        
     }
     
-    public Spot(int id){
-        
+    public Spot(String id){
+        this.spotId = id;
     }
     
     public Spot(Row row, int spotNumber, SpotType spotType, SpotStatus status) {
@@ -37,6 +37,10 @@ public class Spot {
     
     public String getSpotId() { //this too
         return spotId;
+    }
+    
+    public void setSpotId(String spotId){
+        this.spotId = spotId;
     }
    
     public int getSpotNumber() { //this need update

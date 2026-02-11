@@ -11,6 +11,7 @@ package Database;
 
 import parkingapp.*;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,5 +249,146 @@ public class DatabaseManager {
     return spotNumbers;
 }
     
-   
+    public boolean saveTicket(Ticket ticket) {
+    Connection conn = null;
+    
+    try {
+        conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false);
+        
+       
+        String ticketSql = """
+            INSERT INTO tickets 
+            (ticket_id, license_plate, spot_id, entry_time, is_paid) 
+            VALUES (?, ?, ?, ?, ?)
+            """;
+        
+        try (PreparedStatement ticketStmt = conn.prepareStatement(ticketSql)) {
+            // Set ticket parameters
+            ticketStmt.setString(1, ticket.getTicketID());
+            ticketStmt.setString(2, ticket.getVehicle().getPlateNumber());
+            ticketStmt.setString(3, ticket.getSpot().getSpotId());
+            
+           
+            Timestamp entryTimestamp = Timestamp.valueOf(ticket.getEntryTime());
+            ticketStmt.setTimestamp(4, entryTimestamp);
+            
+            // Set payment status (usually false when ticket is created)
+            ticketStmt.setBoolean(5, false); // Tickets are unpaid when created
+            
+            ticketStmt.executeUpdate();
+        }
+        
+        // 2. Update parking spot availability to false (0)
+        String spotSql = "UPDATE parking_spots SET is_available = 0 WHERE spot_id = ?";
+        
+        try (PreparedStatement spotStmt = conn.prepareStatement(spotSql)) {
+            spotStmt.setString(1, ticket.getSpot().getSpotId());
+            int spotsUpdated = spotStmt.executeUpdate();
+            
+            if (spotsUpdated == 0) {
+                throw new SQLException("Failed to update parking spot availability");
+            }
+        }
+        
+        // 3. Commit the transaction
+        conn.commit();
+        return true;
+        
+    } catch (SQLException e) {
+        // Rollback in case of error
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+        }
+        System.err.println("Error saving ticket: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+        
+    } catch (Exception e) {
+        // Rollback for any other exception
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+        }
+        System.err.println("Error saving ticket: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+        
+    } finally {
+        // Restore auto-commit mode
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.err.println("Error restoring auto-commit: " + e.getMessage());
+            }
+        }
+    }
+}
+    
+    public Ticket getTicketDetailsByPlateNumber(String plateNumber) {
+    String sql = """
+        SELECT ticket_id, entry_time, exit_time, license_plate, spot_id
+        FROM tickets 
+        WHERE license_plate = ? 
+        ORDER BY entry_time DESC
+        LIMIT 1
+        """;
+    
+    try (PreparedStatement pstmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        pstmt.setString(1, plateNumber);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+            // Create a simplified Ticket object or return a map
+            String ticketId = rs.getString("ticket_id");
+            LocalDateTime entryTime = rs.getTimestamp("entry_time").toLocalDateTime();
+            
+            // Handle possible null exit_time
+            LocalDateTime exitTime = null;
+            Timestamp exitTimestamp = rs.getTimestamp("exit_time");
+            if (exitTimestamp != null) {
+                exitTime = exitTimestamp.toLocalDateTime();
+            }
+            
+            String plate = rs.getString("license_plate");
+            String spotId = rs.getString("spot_id");
+            
+            // Create and return a ticket object
+            return new Ticket(ticketId, entryTime, exitTime, spotId, plate);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error getting ticket details: " + e.getMessage());
+    }
+    
+    return null;
+}
+    
+    public String getSpotTypeByLPlate(String plateNumber) {
+    String sql = """
+        SELECT spot_type 
+        FROM parking_spots 
+        WHERE license_plate = ?
+        """;
+    
+    try (PreparedStatement pstmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        pstmt.setString(1, plateNumber);
+        ResultSet rs = pstmt.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getString("spot_type");
+        }
+    } catch (SQLException e) {
+        System.err.println("Error getting current spot type: " + e.getMessage());
+    }
+    
+    return null;
+}
 }

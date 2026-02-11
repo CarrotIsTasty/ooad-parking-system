@@ -26,4 +26,10 @@ public class Fine extends Payable {
     public void setPayment(Payment payment){
         this.payment = payment;
     }
+    
+    @Override
+    public double calculateFees(){
+        double fee = 2.0;
+        return fee;
+    };
 }

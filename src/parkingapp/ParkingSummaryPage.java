@@ -1,5 +1,6 @@
 package parkingapp;
 
+import Database.DatabaseManager;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -109,6 +110,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             }
             dispose();
         });
+        
         confirmButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you confirm parking at this spot?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
@@ -117,16 +119,26 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             if (isReserveMode()) {
                 System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + reserveTimeStamp + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
                 //Save to Ticket Database 
+                String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(reserveTimeStamp);
-                //save ticketID.... into TicketDatabase
+                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId,reserveTimeStamp);
+                DatabaseManager db = DatabaseManager.getInstance();
+                db.saveTicket(ticket);
+                //save ticketID.... into TicketDatabase - Done
                 //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = reserveTimeStap where ID = F1-R1-S1
             } else if (!isReserveMode()) {
+                
+                
                 System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + entryTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
                 //Save to Ticket Database 
                 String convertTime = ConvertTime(entryTime.toString());
+                String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(convertTime);
+                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId,convertTime);
+                DatabaseManager db = DatabaseManager.getInstance();
+                db.saveTicket(ticket);
                 //save ticketID.... into TicketDatabase
-                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = entryTime where ID = FX-RX-SX
+                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = entryTime where ID = FX-RX-SX --- is_available set to 0 in the function
             }
             //----- Save End Here -----//
             ParkingSummaryPanel.removeAll(); 

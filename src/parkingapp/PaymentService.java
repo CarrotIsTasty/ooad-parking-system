@@ -34,6 +34,12 @@ public class PaymentService {
         return fines;
     }
     
+//       Compact: For small vehicles (motorcycles, bicycles) - RM 2/hour
+//       Regular: For regular cars - RM 5/hour
+//       Handicapped: Reserved for handicapped vehicles - RM 2/hour (FREE only if
+//       handicapped card holder vehicle parks in handicapped spot)
+//       Reserved: For VIP customers - RM 10/hour
+    
    /* public double calculateTotalDue(){
         return 
     }*/
