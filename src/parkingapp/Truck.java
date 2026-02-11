@@ -5,7 +5,7 @@ public class Truck extends Vehicle{
         super(platenumber, isVip, VehicleType.TRUCK);
     }
     
-    @Override
+    
     public boolean canParkIn(Spot spot) {
     return spot.getSpotType().equals(SpotType.REGULAR);
     }

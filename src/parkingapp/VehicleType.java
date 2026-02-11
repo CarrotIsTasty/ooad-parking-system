@@ -1,7 +1,7 @@
 package parkingapp;
 
 public enum VehicleType {
-    MOTORCYCLE, CAR, SUV, TRUCK, BICYCLE, HANDICAPPED
+    MOTORCYCLE, CAR, SUV, TRUCK, BICYCLE, HANDICAPPED, RESERVED
 }
 
 //checked

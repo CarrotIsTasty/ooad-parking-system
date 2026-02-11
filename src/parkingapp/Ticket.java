@@ -25,15 +25,14 @@ public class Ticket extends Payable {
         this.ticketID = ticketId;
         this.entryTimeFormat = entryTimeFormat;
         this.exitTime = exitTime;
-        this.spot.setSpotId(spotId);
-        this.vehicle.setPlateNumber(plateNumber);
+        this.spot = new Spot(spotId);
+        this.vehicle = new Vehicle(plateNumber);
     }
     
     public Ticket(String ticketId, String plateNumber, VehicleType type , String spotId, String entryTime ){
         this.ticketID = ticketId;
-        this.vehicle.setPlateNumber(plateNumber);
-        this.vehicle.setType(type);
-        this.spot.setSpotId(spotId);
+        this.vehicle = new Vehicle(plateNumber, type);
+        this.spot = new Spot(spotId);
         this.entryTime = entryTime;
     }
     

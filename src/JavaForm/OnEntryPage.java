@@ -1,6 +1,6 @@
 package JavaForm;
 
-import JavaForm.ExitParkingPage;
+import JavaForm.OnExitPage;
 import JavaForm.AvailableParkingPage;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -188,7 +188,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         } else if (mode == Mode.PARKING){
             new AvailableParkingPage(type, plate).setVisible(true);
         } else if (mode == Mode.EXIT){
-            new ExitParkingPage(plate).setVisible(true);
+            new OnExitPage(plate).setVisible(true);
         }
         this.dispose();
     }//GEN-LAST:event_NextButtonActionPerformed

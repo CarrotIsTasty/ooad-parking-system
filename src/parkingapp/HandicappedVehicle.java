@@ -18,7 +18,7 @@ public class HandicappedVehicle extends Vehicle{
         return hasValidCard ? 2.0 : 0;
     }
     
-    @Override
+    
     public boolean canParkIn(Spot spot) {
     return true ;
     }

@@ -2,7 +2,7 @@ package parkingapp;
 
 import java.time.LocalDateTime;
 
-public abstract class Vehicle {
+public class Vehicle {
     private String plateNumber;
     private VehicleType type;
     private boolean isVip;
@@ -15,8 +15,16 @@ public abstract class Vehicle {
         this.isVip = isVip;
         this.type = type;
     }
-    
 
+    public Vehicle(String plateNumber, VehicleType type) {
+        this.plateNumber = plateNumber;
+        this.type = type;
+    }
+    
+    public Vehicle(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+    
     public void setType(VehicleType type) {
         this.type = type;
     }
@@ -45,6 +53,6 @@ public abstract class Vehicle {
         return this.type.equals(VehicleType.HANDICAPPED);
     }
     
-    public abstract boolean canParkIn(Spot spot);
+    //public abstract boolean canParkIn(Spot spot);
 }
 //checked

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import parkingapp.Ticket;
+import parkingapp.Vehicle;
 import parkingapp.VehicleType;
 
 public class ParkingSummaryPage extends javax.swing.JFrame {
@@ -69,7 +70,15 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + "/hour");
+        int parkingRate = 0;
+        if (isReserveMode()) {
+            parkingRate = 10;
+        } else if (!isReserveMode()) {
+            //Get Parking Rate here
+            parkingRate = 5;
+        }
+        
+        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);  
         initParkingSummaryButton();
@@ -124,24 +133,20 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
                 //Save to Ticket Database 
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(reserveTimeStamp);
-                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId,reserveTimeStamp);
+                Ticket ticket = new Ticket(ticketID, this.plate, VehicleType.RESERVED, spotId,reserveTimeStamp);
+                Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
-                //save ticketID.... into TicketDatabase - Done
-                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = reserveTimeStap where ID = F1-R1-S1
-            } else if (!isReserveMode()) {
-                
-                
+            } else if (!isReserveMode()) { 
                 System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + entryTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
                 //Save to Ticket Database 
                 String convertTime = ConvertTime(entryTime.toString());
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(convertTime);
                 Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId,convertTime);
+                Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
-                //save ticketID.... into TicketDatabase
-                //Set parkingspot isavailable = 0, current vehicle = plate, entrytime = entryTime where ID = FX-RX-SX --- is_available set to 0 in the function
             }
             //----- Save End Here -----//
             ParkingSummaryPanel.removeAll(); 
@@ -189,7 +194,15 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + "/hour");
+        int parkingRate = 0;
+        if (isReserveMode()) {
+            parkingRate = 10;
+        } else if (!isReserveMode()) {
+            //Get Parking Rate here
+            parkingRate = 5;
+        }
+        
+        JLabel ParkingRateLabel = new JLabel("Parking Rate  : "+ parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER); 
         initParkingSummaryTicketButton();

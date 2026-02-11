@@ -6,7 +6,7 @@ public class Motorcycle extends Vehicle{
         super(platenumber, isVip, VehicleType.MOTORCYCLE);
     }
     
-      @Override
+    
     public boolean canParkIn(Spot spot) {
     return spot.getSpotType().equals(SpotType.COMPACT);
     }

@@ -5,7 +5,7 @@ public class Suv extends Vehicle{
         super(platenumber, isVip, VehicleType.SUV);
     }
     
-     @Override
+    
     public boolean canParkIn(Spot spot) {
     return spot.getSpotType().equals(SpotType.REGULAR);
     }

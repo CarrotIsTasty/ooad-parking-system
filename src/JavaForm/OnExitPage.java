@@ -11,7 +11,7 @@ import parkingapp.Fine;
 import parkingapp.PaymentMethod;
 import parkingapp.Ticket;
 
-public class ExitParkingPage extends javax.swing.JFrame {
+public class OnExitPage extends javax.swing.JFrame {
     private final String plate;
     private double payableAmount;
     private PaymentMethod method;
@@ -22,7 +22,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
     private JPanel CompletedPaymentParkingSummaryPanel;
     private JPanel CompletedPaymentParkingSummaryButtonPanel;
     
-    public ExitParkingPage(String plate) {
+    public OnExitPage(String plate) {
         this.plate = plate;
         initComponents();
         ParkingFeeSummaryButtonPanel = new JPanel();
@@ -246,7 +246,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
             ParkingPaymentPanel.repaint();
         });
         backBtn.addActionListener(e -> {
-            new ExitParkingPage(plate).setVisible(true);
+            new OnExitPage(plate).setVisible(true);
             this.dispose();
         });
         return p;
@@ -330,7 +330,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
             ParkingPaymentPanel.repaint();
         });
         backBtn.addActionListener(e -> {
-            new ExitParkingPage(plate).setVisible(true);
+            new OnExitPage(plate).setVisible(true);
             this.dispose();
         });
 
@@ -485,7 +485,7 @@ public class ExitParkingPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ExitParkingPage("TEST123").setVisible(true);
+                new OnExitPage("TEST123").setVisible(true);
             }
         });
     }
