@@ -1,10 +1,13 @@
-package parkingapp;
+package JavaForm;
 
+import JavaForm.AvailableParkingPage;
 import Database.DatabaseManager;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import parkingapp.Ticket;
+import parkingapp.VehicleType;
 
 public class ParkingSummaryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

@@ -1,8 +1,10 @@
-package parkingapp;
+package JavaForm;
 
+import JavaForm.AvailableParkingPage;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import parkingapp.VehicleType;
 
 
 public class ParkingPage extends javax.swing.JFrame {

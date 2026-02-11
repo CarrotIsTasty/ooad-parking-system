@@ -1,9 +1,12 @@
-package parkingapp;
+package JavaForm;
 
+import JavaForm.ExitParkingPage;
+import JavaForm.AvailableParkingPage;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import parkingapp.VehicleType;
 import static parkingapp.TestingPage.ceilToNext30Minutes;
 
 

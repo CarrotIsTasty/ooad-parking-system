@@ -1,4 +1,4 @@
-package parkingapp;
+package JavaForm;
 
 import java.awt.*;
 import java.text.NumberFormat;
@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import Database.DatabaseManager;
+import parkingapp.Fine;
+import parkingapp.PaymentMethod;
+import parkingapp.Ticket;
 
 public class ExitParkingPage extends javax.swing.JFrame {
     private final String plate;

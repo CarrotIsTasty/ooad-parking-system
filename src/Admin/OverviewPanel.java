@@ -1,4 +1,4 @@
-package Admin.Panels;
+package Admin;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

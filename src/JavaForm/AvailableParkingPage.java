@@ -1,5 +1,5 @@
 
-package parkingapp;
+package JavaForm;
 
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import Database.DatabaseManager;
 import java.util.List;
 import javax.swing.JOptionPane;
+import parkingapp.VehicleType;
 
 public class AvailableParkingPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
