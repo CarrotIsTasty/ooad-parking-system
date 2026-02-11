@@ -178,7 +178,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         }
         String plate = PlateNumberFormatText.getText();
         if (plate.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select a vehicle type and enter plate number.");
+            JOptionPane.showMessageDialog(this, "Please enter plate number.");
             return;
         }
         String timeStamp = (String) ReserveTimeComboBox.getSelectedItem();
@@ -188,6 +188,9 @@ public class OnEntryPage extends javax.swing.JFrame {
         } else if (mode == Mode.PARKING){
             new AvailableParkingPage(type, plate).setVisible(true);
         } else if (mode == Mode.EXIT){
+            //JEVAAN's PART
+            //Search plate from databate
+            //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
             new OnExitPage(plate).setVisible(true);
         }
         this.dispose();

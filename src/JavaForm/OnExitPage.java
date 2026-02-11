@@ -230,7 +230,8 @@ public class OnExitPage extends javax.swing.JFrame {
             if (result == JOptionPane.NO_OPTION) {return;}
             method = PaymentMethod.CARD;
             String amount = paymentField.getText();
-            //payableAmount = (double)paymentField.getValue();
+            //JEVAAN's PART
+            //payableAmount = (double)paymentField.getValue(); 
             //if payableAmount >= parkingFee then start saving else inform user please pay full amount parking fee
             //----- Save Start Here -----//
             //Save payment to db plate, amount, parkingfee, fineamount, paymentmethod, payment time, ticketid
@@ -425,6 +426,8 @@ public class OnExitPage extends javax.swing.JFrame {
         });
         downloadButton.addActionListener(e -> {
             System.out.println("Downloading...");
+            //generateReceipt(); to T-PLATE-TIME.txt 
+            // JASON's Part
             new StartPage().setVisible(true);
             dispose();
         });

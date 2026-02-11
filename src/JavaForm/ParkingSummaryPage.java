@@ -74,7 +74,9 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         if (isReserveMode()) {
             parkingRate = 10;
         } else if (!isReserveMode()) {
+            //JEVAAN's PART
             //Get Parking Rate here
+            //Set the parking rate to match the database
             parkingRate = 5;
         }
         
@@ -172,7 +174,8 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
     private void initParkingSummaryTicket(){
         ParkingSummaryTicketPanel.removeAll(); 
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10)); 
-        //IDK how to pass the ticket id to here
+        //JEVAAN's PART
+        //Retreive TicketID from database/ticket Class
         String ticketID = "T-"+ plate + "-Time";
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -198,7 +201,9 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         if (isReserveMode()) {
             parkingRate = 10;
         } else if (!isReserveMode()) {
+            //JEVAAN's PART
             //Get Parking Rate here
+            //Set the parking rate to match the database
             parkingRate = 5;
         }
         
@@ -244,7 +249,8 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         });
         confirmButton.addActionListener(e -> {
             System.out.println("Downloading Ticket..."); 
-            //generateTicket(); to T-PLATE-TIME.txt
+            //generateTicket(); to T-PLATE-TIME.txt 
+            // JASON's Part
             new StartPage().setVisible(true);dispose();
         });
         
