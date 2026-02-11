@@ -9,6 +9,7 @@ package Database;
  * @author herbert
  */
 
+import java.math.BigDecimal;
 import parkingapp.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -284,6 +285,7 @@ public class DatabaseManager {
         
         try (PreparedStatement spotStmt = conn.prepareStatement(spotSql)) {
             spotStmt.setString(1, ticket.getSpot().getSpotId());
+            System.out.println("The spot ID in database is: " + ticket.getSpot().getSpotId());
             int spotsUpdated = spotStmt.executeUpdate();
             
             if (spotsUpdated == 0) {
@@ -333,6 +335,7 @@ public class DatabaseManager {
     }
 }
     
+    
     public Ticket getTicketDetailsByPlateNumber(String plateNumber) {
     String sql = """
         SELECT ticket_id, entry_time, exit_time, license_plate, spot_id
@@ -373,9 +376,11 @@ public class DatabaseManager {
     
     public String getSpotTypeByLPlate(String plateNumber) {
     String sql = """
-        SELECT spot_type 
-        FROM parking_spots 
-        WHERE license_plate = ?
+        SELECT ps.spot_type 
+        FROM tickets t
+        LEFT JOIN parking_spots ps 
+        ON t.spot_id   = ps.spot_id
+        WHERE t.exit_time IS NULL AND t.license_plate = ?;
         """;
     
     try (PreparedStatement pstmt = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -391,4 +396,127 @@ public class DatabaseManager {
     
     return null;
 }
+    
+    public boolean clearParkingSpot(String spotId, String licensePlate, Ticket ticket) {
+    Connection conn = null;
+    
+    try {
+        conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false);
+        
+        // 1. Clear the parking spot
+        String clearSpotSql = """
+            UPDATE parking_spots 
+            SET is_available = 1,
+                current_vehicle_plate = NULL,
+                entry_time = NULL
+            WHERE spot_id = ? AND current_vehicle_plate = ?
+            """;
+        
+        try (PreparedStatement pstmt = conn.prepareStatement(clearSpotSql)) {
+            pstmt.setString(1, spotId);
+            pstmt.setString(2, licensePlate);
+            
+            int rowsUpdated = pstmt.executeUpdate();
+            
+            if (rowsUpdated == 0) {
+                // Try clearing without vehicle plate check as fallback
+                String fallbackSql = """
+                    UPDATE parking_spots 
+                    SET is_available = 1,
+                        current_vehicle_plate = NULL,
+                        entry_time = NULL
+                    WHERE spot_id = ?
+                    """;
+                
+                try (PreparedStatement fallbackStmt = conn.prepareStatement(fallbackSql)) {
+                    fallbackStmt.setString(1, spotId);
+                    rowsUpdated = fallbackStmt.executeUpdate();
+                    
+                    if (rowsUpdated == 0) {
+                        throw new SQLException("No parking spot found with ID: " + spotId);
+                    }
+                }
+            }
+        }
+        
+        
+        // 2. Update ticket exit time if ticket is provided
+        if (ticket != null) {
+            String updateTicketSql = """
+                UPDATE tickets 
+                SET exit_time = ?,
+                    hours_parked = ?,
+                    parking_fee = ?,
+                    is_paid = ?
+                WHERE ticket_id = ?
+                """;
+            
+            try (PreparedStatement ticketStmt = conn.prepareStatement(updateTicketSql)) {
+                LocalDateTime exitTime = LocalDateTime.now();
+                ticketStmt.setTimestamp(1, Timestamp.valueOf(exitTime));
+                ticketStmt.setInt(2, ticket.getDuration());
+                
+                BigDecimal parkingFee = BigDecimal.valueOf(ticket.getTotalFee());
+                ticketStmt.setBigDecimal(3, parkingFee);
+               
+                ticketStmt.setBoolean(4, true); // Mark as paid
+                ticketStmt.setString(5, ticket.getTicketID());
+                
+                ticketStmt.executeUpdate();
+            }
+        }
+        
+        
+        
+        // 3. Update vehicle exit time
+        String updateVehicleSql = """
+            UPDATE vehicles 
+            SET exit_time = ? 
+            WHERE license_plate = ? AND exit_time IS NULL
+            """;
+        
+        try (PreparedStatement vehicleStmt = conn.prepareStatement(updateVehicleSql)) {
+            vehicleStmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            vehicleStmt.setString(2, licensePlate);
+            vehicleStmt.executeUpdate();
+        }
+        
+        conn.commit();
+        System.out.println("Parking spot " + spotId + " cleared successfully for vehicle " + licensePlate);
+        return true;
+        
+    } catch (SQLException e) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+        }
+        System.err.println("Error clearing parking spot " + spotId + ": " + e.getMessage());
+        e.printStackTrace();
+        return false;
+        
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.err.println("Error restoring auto-commit: " + e.getMessage());
+            }
+        }
+    }   
 }
+
+    // Overloaded method for simple spot clearing
+    public boolean clearParkingSpot(String spotId) {
+        return clearParkingSpot(spotId, null, null);
+    }
+
+    // Overloaded method for spot clearing with license plate verification
+    public boolean clearParkingSpot(String spotId, String licensePlate) {
+        return clearParkingSpot(spotId, licensePlate, null);
+    }
+}
+

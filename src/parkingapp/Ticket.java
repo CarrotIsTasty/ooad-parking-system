@@ -3,6 +3,7 @@ package parkingapp;
 
 import java.time.LocalDateTime;
 import Database.DatabaseManager;
+import java.time.format.DateTimeFormatter;
 
 public class Ticket extends Payable {
     private String ticketID;
@@ -16,6 +17,7 @@ public class Ticket extends Payable {
     private Payment payment;
     private double hourlyRate;
     private int duration;
+    private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm:ss");
     
     public Ticket(){
         
@@ -36,7 +38,7 @@ public class Ticket extends Payable {
         this.entryTime = entryTime;
     }
     
-    public int getDuration(){return (exitTime.getHour()-createdAt.getHour());}
+    public int getDuration(){return duration;}
     
     public int getDurationFromNow(LocalDateTime now){
         this.duration = now.getHour() - entryTimeFormat.getHour();
@@ -68,8 +70,16 @@ public class Ticket extends Payable {
     public String getEntryTime(){
         return entryTime;
     }
+    
+    public String getEntryTimeFormat(){
+        return entryTimeFormat.format(timeInHours);
+    }
     public LocalDateTime getExitTime() {
         return exitTime;
+    }
+    
+    public void setTotalFee(double total){
+        this.totalFee = total;
     }
 
     public double getTotalFee() {

@@ -12,6 +12,7 @@ import parkingapp.VehicleType;
 
 public class AvailableParkingPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     private Integer selectedFloor = null;
     private Integer selectedRow = null;
     private Integer selectedSpot = null;

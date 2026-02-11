@@ -12,6 +12,7 @@ import static parkingapp.TestingPage.ceilToNext30Minutes;
 
 public class OnEntryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     
     public enum Mode {PARKING, RESERVE, EXIT}
     private final Mode mode;

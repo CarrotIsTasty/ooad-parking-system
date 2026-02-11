@@ -10,13 +10,16 @@ import Database.DatabaseManager;
 import parkingapp.Fine;
 import parkingapp.PaymentMethod;
 import parkingapp.Ticket;
+import strategy.FineContext;
 
 public class OnExitPage extends javax.swing.JFrame {
     private final String plate;
     private double payableAmount;
     private PaymentMethod method;
     private Fine fine;
+    //private FineContext fineContext;
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     private JPanel ParkingFeeSummaryButtonPanel;
     private JPanel ParkingPaymentPanel;
     private JPanel CompletedPaymentParkingSummaryPanel;
@@ -38,19 +41,22 @@ public class OnExitPage extends javax.swing.JFrame {
         //--- Retrieve TicketID from Ticket
         //--- Retrieve Entry Time, Plate, SpotID from vehicles
         //--- Retrieve Amount from fines
+        FineContext fineContext = new FineContext();
         DatabaseManager db = DatabaseManager.getInstance();
         Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
         
         
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH");
         String timeString = now.format(timeFormatter);
+        String timeStringHours = now.format(timeInHours);
        
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticket.getTicketID());
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel entryExitTimeLabel = new JLabel("Entry Time : " + ticket.getEntryTime() +  "Exit Time: " + timeString);
+        JLabel entryExitTimeLabel = new JLabel("Entry Time : " + ticket.getEntryTimeFormat() +  "  Exit Time: " + timeString);
         entryExitTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         entryExitTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -63,7 +69,27 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Can you make my life easy and remove this shit
-        JLabel parkingRateLabel = new JLabel("Parking Rate  : /hour" + db.getSpotTypeByLPlate(plate));
+        
+        double hourlyRate;
+        switch(db.getSpotTypeByLPlate(plate)){
+        case "COMPACT": 
+            hourlyRate = 2.0; 
+            break;
+        case "REGULAR": 
+            hourlyRate = 5.0; 
+            break;
+        case "Handicapped": 
+            hourlyRate = 2.0; 
+            break;
+        case "RESERVED": 
+            hourlyRate = 10.0; 
+            break;
+        default:
+            hourlyRate = 5.0;
+    }
+        
+        
+        JLabel parkingRateLabel = new JLabel("Parking Rate  :"+ hourlyRate+  " /hour");
         parkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -71,16 +97,20 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingDurationLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingDurationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        //need to get Payment service implementation
         JLabel parkingFeeLabel = new JLabel("Parking Fee : RM " + ticket.calculateFees());
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingFineLabel = new JLabel("Parking Fine : RM "+ fine.calculateFees());
+        double fineAmount = 0;
+        if (fine != null)
+            fineAmount = fine.calculateFees();
+        
+        JLabel parkingFineLabel = new JLabel("Parking Fine : RM "+ fineContext.checkAndCalculateFines(ticket));
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFineLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        double total = ticket.calculateFees() + fine.calculateFees();
+        double total = ticket.calculateFees() + fineContext.checkAndCalculateFines(ticket);
+        
         
         JLabel parkingTotalFeeLabel = new JLabel("Total Fee : RM " + total);
         parkingTotalFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -240,6 +270,11 @@ public class OnExitPage extends javax.swing.JFrame {
             System.out.println("Updating into DB...\nVehicle DB: " + plate + ", " + exitTime);
             //Set parkingspot isavailable = 1, current vehicle = null, entrytime = null where ID = FX-RX-SX
             //----- Save End Here -----//
+           
+            DatabaseManager db = DatabaseManager.getInstance();
+            Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
+            db.clearParkingSpot(ticket.getSpot().getSpotId(), plate, ticket);
+            
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
             ParkingPaymentPanel.add(CompletedPaymentParkingSummaryPanel);
@@ -343,6 +378,8 @@ public class OnExitPage extends javax.swing.JFrame {
         CompletedPaymentParkingSummaryPanel = new JPanel();
         CompletedPaymentParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
         
+        
+        //THIS WILL MAKE ME HATE MY LIFE --HERBERT
         JLabel ThankLabel = new JLabel("Thank You!");
         ThankLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         ThankLabel.setHorizontalAlignment(SwingConstants.CENTER);

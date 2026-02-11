@@ -11,7 +11,7 @@ import parkingapp.Vehicle;
 import parkingapp.VehicleType;
 
 public class ParkingSummaryPage extends javax.swing.JFrame {
-    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private LocalDateTime entryTime;
     private final VehicleType type;
     private final String plate;
@@ -135,17 +135,22 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
                 //Save to Ticket Database 
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(reserveTimeStamp);
-                Ticket ticket = new Ticket(ticketID, this.plate, VehicleType.RESERVED, spotId,reserveTimeStamp);
+                Ticket ticket = new Ticket(ticketID, this.plate, VehicleType.RESERVED, spotId, String.format("%s:00", reserveTimeStamp));
                 Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
-            } else if (!isReserveMode()) { 
-                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + entryTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                
+                
+            } else if (!isReserveMode()) {
+                String formattedTime = entryTime.format(timeFmt);
+                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + formattedTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
                 //Save to Ticket Database 
+                
                 String convertTime = ConvertTime(entryTime.toString());
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(convertTime);
-                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId,convertTime);
+                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId, formattedTime);
+                System.out.println("The spot ID in database is: " + ticket.getSpot().getSpotId());
                 Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
