@@ -1,14 +1,30 @@
 
 package JavaForm;
 
+import Admin.AdminLoginGUI;
 import JavaForm.OnEntryPage;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class StartPage extends javax.swing.JFrame {
-
+    private int clickCount = 0;
     public StartPage() {
         initComponents();
+        launchAdminGUI();
     }
-
+    private void launchAdminGUI(){
+        
+        TitleLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                clickCount++;
+                if (clickCount == 5) {
+                    new AdminLoginGUI();
+                    clickCount = 0;
+                }
+            }
+        });
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
