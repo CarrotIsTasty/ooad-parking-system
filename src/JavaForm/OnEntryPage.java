@@ -1,5 +1,6 @@
 package JavaForm;
 
+import Database.DatabaseConnection;
 import JavaForm.OnExitPage;
 import JavaForm.AvailableParkingPage;
 import java.time.Duration;
@@ -8,12 +9,28 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import parkingapp.VehicleType;
 import static parkingapp.TestingPage.ceilToNext30Minutes;
+import java.sql.*;
+
 
 
 public class OnEntryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     private VehicleType type;
+
+    private static class PreparedStatment {
+
+        public PreparedStatment() {
+        }
+
+        private void setString(int i, String plate) {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+
+        private ResultSet executeQuery() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+    }
     public enum Mode {PARKING, RESERVE, EXIT}
     private final Mode mode;
     
@@ -195,6 +212,24 @@ public class OnEntryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Search plate from databate
             //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
+            String sql = "SELECT 1 FROM vehicles WHERE license_plate = ? LIMIT 1";
+            
+            try(Connection conn= DatabaseConnection.getConnection();
+                PreparedStatement ps =conn.prepareStatement(sql);) {
+                
+                ps.setString(1,plate);
+                
+                ResultSet rs = ps.executeQuery();
+                
+                if(!rs.next()) {
+                    JOptionPane.showMessageDialog(this,"Your vehicle does not exist in our system");
+                    return;
+                }
+                
+            } catch (SQLException ex) {
+                System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+            
             new OnExitPage(plate).setVisible(true);
         }
         this.dispose();
