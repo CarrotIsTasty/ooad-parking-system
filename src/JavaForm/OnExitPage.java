@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import Database.DatabaseManager;
 import parkingapp.Fine;
+import parkingapp.Payment;
 import parkingapp.PaymentMethod;
 import parkingapp.Ticket;
 import strategy.FineContext;
@@ -17,6 +18,9 @@ public class OnExitPage extends javax.swing.JFrame {
     private double payableAmount;
     private PaymentMethod method;
     private Fine fine;
+    private double amount;
+    private double total;
+    private double parkingfee;
     //private FineContext fineContext;
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
@@ -100,6 +104,8 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingDurationLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingDurationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
+        this.parkingfee = ticket.calculateFees();
+        
         JLabel parkingFeeLabel = new JLabel("Parking Fee : RM " + ticket.calculateFees());
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -112,10 +118,10 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFineLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        double total = ticket.calculateFees() + fineContext.checkAndCalculateFines(ticket);
+         this.total = ticket.calculateFees() + fineContext.checkAndCalculateFines(ticket);
         
         
-        JLabel parkingTotalFeeLabel = new JLabel("Total Fee : RM " + total);
+        JLabel parkingTotalFeeLabel = new JLabel("Total Fee : RM " + this.total);
         parkingTotalFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingTotalFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -253,16 +259,16 @@ public class OnExitPage extends javax.swing.JFrame {
             if (text.isEmpty()) {JOptionPane.showMessageDialog(p, "Please enter an amount to pay."); return;
             } else {
                 try {
-                    double amount = Double.parseDouble(text);
-                    if (amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00");  return;} 
-                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(amount));}
+                     this.amount = Double.parseDouble(text);
+                    if (this.amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00");  return;} 
+                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(this.amount));}
                 } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(p, "Invalid amount format. Please use 0.00");  return;}
             }
             
             int result = JOptionPane.showConfirmDialog(this, "Confirm Payment,\nPayments are not refundable.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
             method = PaymentMethod.CARD;
-            String amount = paymentField.getText();
+           //amount = paymentField.getText();
             //JEVAAN's PART
             
             //if vehicle type is handicapped park at handicapped spot fee = 0
@@ -300,7 +306,7 @@ public class OnExitPage extends javax.swing.JFrame {
            
             DatabaseManager db = DatabaseManager.getInstance();
             Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
-            db.clearParkingSpot(ticket.getSpot().getSpotId(), plate, ticket);
+            //db.clearParkingSpot(ticket.getSpot().getSpotId(), plate, ticket);
             
             ParkingPaymentPanel.removeAll();
             initCompletedPaymentParkingSummary();
@@ -368,9 +374,9 @@ public class OnExitPage extends javax.swing.JFrame {
             if (text.isEmpty()) {JOptionPane.showMessageDialog(p, "Please enter an amount to pay."); return;
             } else {
                 try {
-                    double amount = Double.parseDouble(text);
-                    if (amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00"); return;} 
-                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(amount));}
+                     this.amount = Double.parseDouble(text);
+                    if (this.amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00"); return;} 
+                    else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(this.amount));}
                 } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(p, "Invalid amount format. Please use 0.00"); return;}
             }
             
@@ -404,19 +410,26 @@ public class OnExitPage extends javax.swing.JFrame {
     private void initCompletedPaymentParkingSummary() {
         CompletedPaymentParkingSummaryPanel = new JPanel();
         CompletedPaymentParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
-        
-        
+        DatabaseManager db = DatabaseManager.getInstance();
+        Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH");
+        String timeString = now.format(timeFormatter);
+        String timeStringHours = now.format(timeInHours);
+        FineContext fineContext = new FineContext();
+        db.clearParkingSpot(ticket.getSpot().getSpotId(), plate, ticket);
         //THIS WILL MAKE ME HATE MY LIFE --HERBERT
         JLabel ThankLabel = new JLabel("Thank You!");
         ThankLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         ThankLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+      
         String ticketID = "T-"+ plate + "-Time";
-        JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
+        JLabel TicketIDLabel = new JLabel("TicketID    : " + ticket.getTicketID());
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel entryExitTimeLabel = new JLabel("Entry Time :    Exit Time:");
+        JLabel entryExitTimeLabel = new JLabel("Entry Time :" + ticket.getEntryTimeFormat() + " Exit Time: " +  timeString);
         entryExitTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         entryExitTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -424,33 +437,39 @@ public class OnExitPage extends javax.swing.JFrame {
         plateNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         plateNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel parkingSpotLabel = new JLabel("Parking Spot  : F-R-S");
+        JLabel parkingSpotLabel = new JLabel("Parking Spot  : " + ticket.getSpot().getSpotId());
         parkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingDurationLabel = new JLabel("Duration    : Hours");
+        JLabel parkingDurationLabel = new JLabel("Duration    :" + ticket.getDuration() +  " Hours");
         parkingDurationLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingDurationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingFeeLabel = new JLabel("Parking Fee : RM ");
+        JLabel parkingFeeLabel = new JLabel("Parking Fee : RM " + this.parkingfee);
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingFineLabel = new JLabel("Parking Fine : RM ");
+        JLabel parkingFineLabel = new JLabel("Parking Fine : RM " + fineContext.checkAndCalculateFines(ticket));
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFineLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingTotalPaidLabel = new JLabel("Total Amount Paid : RM ");
+        JLabel parkingTotalPaidLabel = new JLabel("Total Amount Paid : RM " + this.amount );
         parkingTotalPaidLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingTotalPaidLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JLabel methodLabel = new JLabel("Payment Method :  " + method);
         methodLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         methodLabel.setHorizontalAlignment(SwingConstants.CENTER);
+       
+        this.total = this.total - this.amount;
         
-        JLabel remainingBalanceLabel = new JLabel("Remaining Balance :  RM ");
+        JLabel remainingBalanceLabel = new JLabel("Remaining Balance :  RM " + this.total);
         remainingBalanceLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         remainingBalanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        Payment payment = new Payment(this.amount, this.parkingfee, fineContext.checkAndCalculateFines(ticket), ticket.getTicketID(), plate, method );
+        payment.saveInDb();
+        
         
         initCompletedPaymentParkingSummaryButton();
         

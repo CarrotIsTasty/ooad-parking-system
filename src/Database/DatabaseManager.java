@@ -381,6 +381,80 @@ public class DatabaseManager {
 
         return null;
     }
+    
+    public boolean savePayment(Payment payment) {
+    Connection conn = null;
+    
+    try {
+        conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false);
+        
+        // Insert payment record without remaining_balance
+        String paymentSql = """
+            INSERT INTO payments 
+            (license_plate, amount, parking_fee, fine_amount, payment_method, ticket_id) 
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
+        
+        try (PreparedStatement stmt = conn.prepareStatement(paymentSql)) {
+            stmt.setString(1, payment.getPlate());
+            stmt.setDouble(2, payment.getAmountPaid());
+            stmt.setDouble(3, payment.getParkingFee());
+            stmt.setDouble(4, payment.getFineAmount());
+            stmt.setString(5, payment.getPaymentMethod().name());
+            stmt.setString(6, payment.getTicketid());
+            
+            stmt.executeUpdate();
+        }
+        
+        // Calculate total charges to check if fully paid
+        double totalCharges = payment.getParkingFee() + payment.getFineAmount();
+        double amountPaid = payment.getAmountPaid();
+        
+        // If fully paid, update ticket status
+        if (amountPaid >= totalCharges) {
+            String updateTicketSql = "UPDATE tickets SET is_paid = 1 WHERE ticket_id = ?";
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateTicketSql)) {
+                updateStmt.setString(1, payment.getTicketid());
+                updateStmt.executeUpdate();
+            }
+            
+            // Free up the parking spot
+            String spotSql = """
+                UPDATE parking_spots SET is_available = 1 
+                WHERE spot_id = (SELECT spot_id FROM tickets WHERE ticket_id = ?)
+                """;
+            try (PreparedStatement spotStmt = conn.prepareStatement(spotSql)) {
+                spotStmt.setString(1, payment.getTicketid());
+                spotStmt.executeUpdate();
+            }
+        }
+        
+        conn.commit();
+        return true;
+        
+    } catch (SQLException e) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+                System.err.println("Transaction rolled back due to error: " + e.getMessage());
+            } catch (SQLException rollbackEx) {
+                System.err.println("Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+        }
+        e.printStackTrace();
+        return false;
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+}
 
     public String getSpotTypeByLPlate(String plateNumber) {
         String sql = """
@@ -524,4 +598,5 @@ public class DatabaseManager {
     public boolean clearParkingSpot(String spotId, String licensePlate) {
         return clearParkingSpot(spotId, licensePlate, null);
     }
-}
+    
+} 
