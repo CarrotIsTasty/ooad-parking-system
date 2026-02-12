@@ -89,6 +89,9 @@ public class DatabaseManager {
             compatibleTypes.add("REGULAR");
             compatibleTypes.add("COMPACT");
             break;
+        case RESERVED:
+            compatibleTypes.add("RESERVED");
+            break;
         default:
             // Default to REGULAR spots for unknown types
             compatibleTypes.add("REGULAR");
