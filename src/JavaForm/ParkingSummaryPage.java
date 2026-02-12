@@ -3,6 +3,7 @@ package JavaForm;
 import JavaForm.AvailableParkingPage;
 import Database.DatabaseManager;
 import java.awt.*;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
@@ -52,7 +53,28 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         return reserveTimeStamp != null;
     }
     
-    private void initParkingSummary(){
+    private int getParkingRateFromDb() throws SQLException{
+        int rate = 0;
+        
+        String sql = "SELECT parking_fee, hours_parked FROM tickets WHERE license_plate = ? ORDER BY entry_time DESC LIMIT 1";
+         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
+         java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, plate);
+
+        try (java.sql.ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                int hours = rs.getInt("hours_parked");
+                double fee = rs.getDouble("parking_fee");
+
+                if (hours > 0) {
+                    rate = (int) (fee / hours);
+                }
+            }
+        }
+    }
+    
+    private void initParkingSummary() throws SQLException{
         ParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
         JLabel VehicleTypeLabel = new JLabel("Vehicle Type    : " + type);
         VehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -77,6 +99,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
+            parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
         
@@ -176,7 +199,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         return "T-"+ plate + "-" + convertedTime;
     }
     //Display Paking Summary After Confirming Parking Spot 
-    private void initParkingSummaryTicket(){
+    private void initParkingSummaryTicket() throws SQLException{
         ParkingSummaryTicketPanel.removeAll(); 
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10)); 
         //JEVAAN's PART
@@ -209,6 +232,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
+            parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
         
