@@ -12,6 +12,7 @@ import parkingapp.Vehicle;
 import parkingapp.VehicleType;
 
 public class ParkingSummaryPage extends javax.swing.JFrame {
+
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private LocalDateTime entryTime;
     private final VehicleType type;
@@ -23,11 +24,11 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
     private JPanel ParkingSummaryButtonPanel;
     private JPanel ParkingSummaryTicketPanel;
     private JPanel ParkingSummaryTicketButtonPanel;
-    
-    public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot){
+
+    public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot) {
         this(type, plate, selectedFloor, selectedRow, selectedSpot, null);
     }
-    
+
     public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot, String reserveTimeStamp) {
         this.reserveTimeStamp = reserveTimeStamp;
         this.type = type;
@@ -35,7 +36,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         this.selectedFloor = selectedFloor;
         this.selectedRow = selectedRow;
         this.selectedSpot = selectedSpot;
-        System.out.println("Summary"+ reserveTimeStamp);
+        System.out.println("Summary" + reserveTimeStamp);
         initComponents();
         ParkingSummaryButtonPanel = new JPanel();
         ParkingSummaryTicketPanel = new JPanel();
@@ -44,54 +45,54 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         TimeLabel.setText("Time Now: " + now.format(timeFmt));
         this.entryTime = LocalDateTime.now();
         System.out.println(timeFmt);
-//        initParkingSummary();
-//        initParkingSummaryTicket();
-        ParkingSummaryPanel.setVisible(true);     
+        initParkingSummary();
+        initParkingSummaryTicket();
+        ParkingSummaryPanel.setVisible(true);
     }
-    
-    private boolean isReserveMode(){
+
+    private boolean isReserveMode() {
         return reserveTimeStamp != null;
     }
-    
-    /*private int getParkingRateFromDb() throws SQLException{
-        int rate = 0;
-        
-        String sql = "SELECT parking_fee, hours_parked FROM tickets WHERE license_plate = ? ORDER BY entry_time DESC LIMIT 1";
-         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
-         java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setString(1, plate);
+//    private int getParkingRateFromDb() throws SQLException {
+//        int rate = 0;
+//
+//        String sql = "SELECT parking_fee, hours_parked FROM tickets WHERE license_plate = ? ORDER BY entry_time DESC LIMIT 1";
+//        try (java.sql.Connection conn = Database.DatabaseConnection.getConnection(); java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+//
+//            ps.setString(1, plate);
+//
+//            try (java.sql.ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) {
+//                    int hours = rs.getInt("hours_parked");
+//                    double fee = rs.getDouble("parking_fee");
+//
+//                    if (hours > 0) {
+//                        rate = (int) (fee / hours);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-        try (java.sql.ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                int hours = rs.getInt("hours_parked");
-                double fee = rs.getDouble("parking_fee");
-
-                if (hours > 0) {
-                    rate = (int) (fee / hours);
-                }
-            }
-        }
-    } */
-    
-    private void initParkingSummary() throws SQLException{
+    private void initParkingSummary() {
         ParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
         JLabel VehicleTypeLabel = new JLabel("Vehicle Type    : " + type);
         VehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         VehicleTypeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         JLabel PlateNumberLabel = new JLabel("Plate Number  : " + plate);
         PlateNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         PlateNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         JLabel FloorLabel = new JLabel("Floor Number : " + selectedFloor);
         FloorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         FloorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        JLabel ParkingSpotLabel = new JLabel("Parking Spot  : F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+
+        JLabel ParkingSpotLabel = new JLabel("Parking Spot  : F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot);
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         int parkingRate = 0;
         if (isReserveMode()) {
             parkingRate = 10;
@@ -99,62 +100,68 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
-           // parkingRate = getParkingRateFromDb();
+            // parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
-        
+
         JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);  
+        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         initParkingSummaryButton();
-        
+
         ParkingSummaryPanel.add(VehicleTypeLabel);
         ParkingSummaryPanel.add(PlateNumberLabel);
         ParkingSummaryPanel.add(FloorLabel);
         ParkingSummaryPanel.add(ParkingSpotLabel);
         ParkingSummaryPanel.add(ParkingRateLabel);
-        
+
         if (isReserveMode()) {
             JLabel ReserverTimpStampLabel = new JLabel("Reserved Time    : " + reserveTimeStamp);
             ReserverTimpStampLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             ReserverTimpStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
             ParkingSummaryPanel.add(ReserverTimpStampLabel);
         }
-        
+
         ParkingSummaryPanel.add(ParkingSummaryButtonPanel);
-        
+
         ParkingSummaryPanel.revalidate();
         ParkingSummaryPanel.repaint();
     }
-    
-    private void initParkingSummaryButton(){
+
+    private void initParkingSummaryButton() {
         ParkingSummaryButtonPanel.setLayout(new GridLayout(0, 2, 10, 10));
         JButton backButton = new JButton("Back");
         JButton confirmButton = new JButton("Confirm");
 
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         confirmButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        
+
         backButton.addActionListener(e -> {
             System.out.println("back button " + reserveTimeStamp);
             int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
-            if (isReserveMode()){
-                if (result == JOptionPane.NO_OPTION) {return;}
+            if (isReserveMode()) {
+                if (result == JOptionPane.NO_OPTION) {
+                    return;
+                }
                 new AvailableParkingPage(type, plate, reserveTimeStamp).setVisible(true);
             } else {
-                if (result == JOptionPane.NO_OPTION) {return;}
+                if (result == JOptionPane.NO_OPTION) {
+                    return;
+                }
                 new AvailableParkingPage(type, plate).setVisible(true);
             }
             dispose();
         });
-        
+
         confirmButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you confirm parking at this spot?", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.NO_OPTION) {return;}
+            if (result == JOptionPane.NO_OPTION) {
+                return;
+            }
             String ticketID;
             //----- Save Start Here -----//
             if (isReserveMode()) {
-                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + reserveTimeStamp + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + reserveTimeStamp + " | null | " + "F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot);
                 //Save to Ticket Database 
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(reserveTimeStamp);
@@ -162,13 +169,12 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
                 Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
-                
-                
+
             } else if (!isReserveMode()) {
                 String formattedTime = entryTime.format(timeFmt);
-                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + formattedTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+                System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + formattedTime + " | null | " + "F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot);
                 //Save to Ticket Database 
-                
+
                 String convertTime = ConvertTime(entryTime.toString());
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
                 ticketID = CreateTicketID(convertTime);
@@ -179,65 +185,66 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
                 db.saveTicket(ticket);
             }
             //----- Save End Here -----//
-            ParkingSummaryPanel.removeAll(); 
+            ParkingSummaryPanel.removeAll();
 //            initParkingSummaryTicket();
-            ParkingSummaryPanel.add(ParkingSummaryTicketPanel); 
-            ParkingSummaryPanel.revalidate(); 
+            ParkingSummaryPanel.add(ParkingSummaryTicketPanel);
+            ParkingSummaryPanel.revalidate();
             ParkingSummaryPanel.repaint();
         });
-        
+
         ParkingSummaryButtonPanel.add(backButton);
         ParkingSummaryButtonPanel.add(confirmButton);
     }
-    
+
     private static String ConvertTime(String time) {
         return time.replace(" ", "-");
     }
-    
-    private String CreateTicketID(String time){
+
+    private String CreateTicketID(String time) {
         String convertedTime = ConvertTime(time);
-        return "T-"+ plate + "-" + convertedTime;
+        return "T-" + plate + "-" + convertedTime;
     }
+
     //Display Paking Summary After Confirming Parking Spot 
-    private void initParkingSummaryTicket() throws SQLException{
-        ParkingSummaryTicketPanel.removeAll(); 
-        ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10)); 
+    private void initParkingSummaryTicket() {
+        ParkingSummaryTicketPanel.removeAll();
+        ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10));
         //JEVAAN's PART
         //Retreive TicketID from database/ticket Class
         String ticketID = null;
-        
-        String sql = "SELECT ticket_id FROM tickets WHERE license_plate = ? ORDER BY created_at DESC LIMIT 1";
-         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
-         java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+//        
+//        String sql = "SELECT ticket_id FROM tickets WHERE license_plate = ? ORDER BY created_at DESC LIMIT 1";
+//         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
+//         java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+//
+//        ps.setString(1, plate);
+//
+//        try (java.sql.ResultSet rs = ps.executeQuery()){
+//            if (rs.next()){
+//                ticketID = rs.getString("ticket_id");
+//            }
+//        }
 
-        ps.setString(1, plate);
-
-        try (java.sql.ResultSet rs = ps.executeQuery()){
-            if (rs.next()){
-                ticketID = rs.getString("ticket_id");
-            }
-        }
-                
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         JLabel VehicleTypeLabel = new JLabel("Vehicle Type    : " + type);
         VehicleTypeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         VehicleTypeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         JLabel PlateNumberLabel = new JLabel("Plate Number  : " + plate);
         PlateNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         PlateNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         JLabel FloorLabel = new JLabel("Floor Number : " + selectedFloor);
         FloorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         FloorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        JLabel ParkingSpotLabel = new JLabel("Parking Spot  : F" + selectedFloor + "-R" + selectedRow+ "-S" + selectedSpot);
+
+        JLabel ParkingSpotLabel = new JLabel("Parking Spot  : F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot);
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
+
         int parkingRate = 0;
         if (isReserveMode()) {
             parkingRate = 10;
@@ -248,33 +255,34 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
 //            parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
-        
-        JLabel ParkingRateLabel = new JLabel("Parking Rate  : "+ parkingRate + "/hour");
+
+        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER); 
-//        initParkingSummaryTicketButton();
-        
+        ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        initParkingSummaryTicketButton();
+
         ParkingSummaryTicketPanel.add(TicketIDLabel);
         ParkingSummaryTicketPanel.add(VehicleTypeLabel);
         ParkingSummaryTicketPanel.add(PlateNumberLabel);
         ParkingSummaryTicketPanel.add(FloorLabel);
         ParkingSummaryTicketPanel.add(ParkingSpotLabel);
         ParkingSummaryTicketPanel.add(ParkingRateLabel);
-        
+
         if (isReserveMode()) {
             JLabel ReserverTimpStampLabel = new JLabel("Reserved Time    : " + reserveTimeStamp);
             ReserverTimpStampLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             ReserverTimpStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
             ParkingSummaryTicketPanel.add(ReserverTimpStampLabel);
-        } else if (!isReserveMode()) {}
-        
+        } else if (!isReserveMode()) {
+        }
+
         ParkingSummaryTicketPanel.add(ParkingSummaryTicketButtonPanel);
-        
+
         ParkingSummaryTicketPanel.revalidate();
         ParkingSummaryTicketPanel.repaint();
     }
-    
-//    private void initParkingSummaryTicketButton(){
+
+    private void initParkingSummaryTicketButton() {
         ParkingSummaryTicketButtonPanel.removeAll();
         ParkingSummaryTicketButtonPanel.setLayout(new GridLayout(0, 2, 10, 10));
         JButton backButton = new JButton("Exit");
@@ -282,24 +290,27 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
 
         backButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         confirmButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        
+
         backButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(this, "Do you want to go back?\nRemember to download your parking Ticket.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.NO_OPTION) {return;}
-            new StartPage().setVisible(true); 
+            if (result == JOptionPane.NO_OPTION) {
+                return;
+            }
+            new StartPage().setVisible(true);
             dispose();
         });
         confirmButton.addActionListener(e -> {
-            System.out.println("Downloading Ticket..."); 
+            System.out.println("Downloading Ticket...");
             //generateTicket(); to T-PLATE-TIME.txt 
             // JASON's Part
-            new StartPage().setVisible(true);dispose();
+            new StartPage().setVisible(true);
+            dispose();
         });
-        
+
         ParkingSummaryTicketButtonPanel.add(backButton);
         ParkingSummaryTicketButtonPanel.add(confirmButton);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

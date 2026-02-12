@@ -339,7 +339,6 @@ public class DatabaseManager {
     }
 }
     
-    
     public Ticket getTicketDetailsByPlateNumber(String plateNumber) {
     String sql = """
         SELECT ticket_id, entry_time, exit_time, license_plate, spot_id
