@@ -204,7 +204,20 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10)); 
         //JEVAAN's PART
         //Retreive TicketID from database/ticket Class
-        String ticketID = "T-"+ plate + "-Time";
+        String ticketID = null;
+        
+        String sql = "SELECT ticket_id FROM tickets WHERE license_plate = ? ORDER BY created_at DESC LIMIT 1";
+         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
+         java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, plate);
+
+        try (java.sql.ResultSet rs = ps.executeQuery()){
+            if (rs.next()){
+                ticketID = rs.getString("ticket_id");
+            }
+        }
+                
         JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
