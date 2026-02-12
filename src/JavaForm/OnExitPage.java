@@ -268,6 +268,25 @@ public class OnExitPage extends javax.swing.JFrame {
             //if vehicle type is handicapped park at handicapped spot fee = 0
             //park at other spot spot calculate as nomral rate
             //park at reserved spot the rate = 2
+            DatabaseManager db = DatabaseManager.getInstance();
+            Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
+            FineContext finecontext = new FineContext();
+            
+            double total = ticket.calculateFees() + fine.Context.checkAndCalculateFines(ticket);
+            double finalFee = total;
+            
+            if (spot_type == spot_type.HANDICAPPED){
+                if (vehicle_type == vehicle_type.HANDICAPPED){
+                    finalFee = 0;
+                }else{
+                    finalFee = total;
+                }
+            } else if (spot_type == spot_type.RESERVED){
+                finalFee = hours_parked * 2.0;
+            }else {
+                finalFee = total; // normal rate
+            } // not completed yet
+            
             
             //payableAmount = (double)paymentField.getValue(); 
             //if payableAmount >= parkingFee then start saving else inform user please pay full amount parking fee
