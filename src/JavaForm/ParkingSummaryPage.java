@@ -44,8 +44,8 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         TimeLabel.setText("Time Now: " + now.format(timeFmt));
         this.entryTime = LocalDateTime.now();
         System.out.println(timeFmt);
-        initParkingSummary();
-        initParkingSummaryTicket();
+//        initParkingSummary();
+//        initParkingSummaryTicket();
         ParkingSummaryPanel.setVisible(true);     
     }
     
@@ -53,7 +53,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         return reserveTimeStamp != null;
     }
     
-    private int getParkingRateFromDb() throws SQLException{
+    /*private int getParkingRateFromDb() throws SQLException{
         int rate = 0;
         
         String sql = "SELECT parking_fee, hours_parked FROM tickets WHERE license_plate = ? ORDER BY entry_time DESC LIMIT 1";
@@ -72,7 +72,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
                 }
             }
         }
-    }
+    } */
     
     private void initParkingSummary() throws SQLException{
         ParkingSummaryPanel.setLayout(new GridLayout(0, 1, 10, 10));
@@ -99,7 +99,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
-            parkingRate = getParkingRateFromDb();
+           // parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
         
@@ -180,7 +180,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             }
             //----- Save End Here -----//
             ParkingSummaryPanel.removeAll(); 
-            initParkingSummaryTicket();
+//            initParkingSummaryTicket();
             ParkingSummaryPanel.add(ParkingSummaryTicketPanel); 
             ParkingSummaryPanel.revalidate(); 
             ParkingSummaryPanel.repaint();
@@ -245,14 +245,14 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
-            parkingRate = getParkingRateFromDb();
+//            parkingRate = getParkingRateFromDb();
             parkingRate = 5;
         }
         
         JLabel ParkingRateLabel = new JLabel("Parking Rate  : "+ parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER); 
-        initParkingSummaryTicketButton();
+//        initParkingSummaryTicketButton();
         
         ParkingSummaryTicketPanel.add(TicketIDLabel);
         ParkingSummaryTicketPanel.add(VehicleTypeLabel);
@@ -274,7 +274,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.repaint();
     }
     
-    private void initParkingSummaryTicketButton(){
+//    private void initParkingSummaryTicketButton(){
         ParkingSummaryTicketButtonPanel.removeAll();
         ParkingSummaryTicketButtonPanel.setLayout(new GridLayout(0, 2, 10, 10));
         JButton backButton = new JButton("Exit");
