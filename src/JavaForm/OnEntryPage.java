@@ -1,19 +1,14 @@
 package JavaForm;
 
 import Database.DatabaseConnection;
-import JavaForm.OnExitPage;
-import JavaForm.AvailableParkingPage;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import parkingapp.VehicleType;
-import static parkingapp.TestingPage.ceilToNext30Minutes;
 import java.sql.*;
 
-
-
 public class OnEntryPage extends javax.swing.JFrame {
+
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     private VehicleType type;
@@ -31,9 +26,12 @@ public class OnEntryPage extends javax.swing.JFrame {
             throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         }
     }
-    public enum Mode {PARKING, RESERVE, EXIT}
+
+    public enum Mode {
+        PARKING, RESERVE, EXIT
+    }
     private final Mode mode;
-    
+
     public OnEntryPage(Mode mode) {
         initComponents();
         this.mode = mode;
@@ -41,19 +39,19 @@ public class OnEntryPage extends javax.swing.JFrame {
         TimeLabel.setText("Time Now: " + now.format(timeFmt));
         applyMode();
     }
-    
+
     private void applyMode() {
         if (mode == Mode.RESERVE) {
             VehicleTypeComboBox.setVisible(false);
             VehicleTypeLabel.setVisible(false);
             ReserveTimeComboBox.setVisible(true);
-            ReserveLabel.setVisible(true);            
+            ReserveLabel.setVisible(true);
             this.type = VehicleType.RESERVED;
             ReserveHourGenerator();
-        } else if (mode == Mode.PARKING){
+        } else if (mode == Mode.PARKING) {
             ReserveTimeComboBox.setVisible(false);
             ReserveLabel.setVisible(false);
-        } else if (mode == Mode.EXIT){
+        } else if (mode == Mode.EXIT) {
             ReserveTimeComboBox.setVisible(false);
             ReserveLabel.setVisible(false);
             VehicleTypeComboBox.setVisible(false);
@@ -61,16 +59,18 @@ public class OnEntryPage extends javax.swing.JFrame {
         }
 
         this.revalidate();
-        this.repaint();           
+        this.repaint();
     }
-    
+
     private static LocalDateTime ceilToNext30Minutes(LocalDateTime time) {
         int minute = time.getMinute();
         int remainder = minute % 30;
-        if (remainder == 0) {return time.withSecond(0).withNano(0);}
+        if (remainder == 0) {
+            return time.withSecond(0).withNano(0);
+        }
         return time.plusMinutes(30 - remainder).withSecond(0).withNano(0);
     }
-    
+
     private void ReserveHourGenerator() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime timeNow = LocalDateTime.now();
@@ -82,6 +82,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         ReserveTimeComboBox.addItem(reserveTime60m);
         ReserveTimeComboBox.addItem(reserveTime90m);
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -184,7 +185,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextButtonActionPerformed
         int typeIndex = VehicleTypeComboBox.getSelectedIndex();
 
@@ -197,39 +198,53 @@ public class OnEntryPage extends javax.swing.JFrame {
         System.out.println(timeStamp);
         if (mode == Mode.RESERVE) {
             new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
-        } else if (mode == Mode.PARKING){
+        } else if (mode == Mode.PARKING) {
             switch (typeIndex) {
-            case 0: this.type = VehicleType.CAR; break;
-            case 1: this.type = VehicleType.SUV; break;
-            case 2: this.type = VehicleType.TRUCK; break;
-            case 3: this.type = VehicleType.MOTORCYCLE; break;
-            case 4: this.type = VehicleType.BICYCLE; break;
-            case 5: this.type = VehicleType.HANDICAPPED; break;
-            default: throw new AssertionError();
-        }
+                case 0:
+                    this.type = VehicleType.CAR;
+                    break;
+                case 1:
+                    this.type = VehicleType.SUV;
+                    break;
+                case 2:
+                    this.type = VehicleType.TRUCK;
+                    break;
+                case 3:
+                    this.type = VehicleType.MOTORCYCLE;
+                    break;
+                case 4:
+                    this.type = VehicleType.BICYCLE;
+                    break;
+                case 5:
+                    this.type = VehicleType.HANDICAPPED;
+                    break;
+                default:
+                    throw new AssertionError();
+            }
             new AvailableParkingPage(type, plate).setVisible(true);
-        } else if (mode == Mode.EXIT){
+        } else if (mode == Mode.EXIT) {
             //JEVAAN's PART
             //Search plate from databate
             //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
             String sql = "SELECT 1 FROM vehicles WHERE license_plate = ? LIMIT 1";
-            
-            try(Connection conn= DatabaseConnection.getConnection();
-                PreparedStatement ps =conn.prepareStatement(sql);) {
-                
-                ps.setString(1,plate);
-                
+
+            try {
+                Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+
+                ps.setString(1, plate);
+
                 ResultSet rs = ps.executeQuery();
-                
-                if(!rs.next()) {
-                    JOptionPane.showMessageDialog(this,"Your vehicle does not exist in our system");
+
+                if (!rs.next()) {
+                    JOptionPane.showMessageDialog(this, "Your vehicle does not exist in our system");
                     return;
                 }
-                
+
             } catch (SQLException ex) {
                 System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
-            
+
             new OnExitPage(plate).setVisible(true);
         }
         this.dispose();
@@ -243,7 +258,7 @@ public class OnEntryPage extends javax.swing.JFrame {
     private void ReserveTimeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReserveTimeComboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReserveTimeComboBoxActionPerformed
-    
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

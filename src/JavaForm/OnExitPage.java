@@ -46,7 +46,7 @@ public class OnExitPage extends javax.swing.JFrame {
         //park at reserved spot the rate = 2
         FineContext fineContext = new FineContext();
         DatabaseManager db = DatabaseManager.getInstance();
-        Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
+        Ticket ticket = db.getTicketDetailsByPlateNumber(this.plate);
         
         
         LocalDateTime now = LocalDateTime.now();
@@ -74,7 +74,7 @@ public class OnExitPage extends javax.swing.JFrame {
         // Can you make my life easy and remove this shit
         
         double hourlyRate;
-        switch(db.getSpotTypeByLPlate(plate)){
+        switch(db.getSpotTypeByLPlate(this.plate)){
         case "COMPACT": 
             hourlyRate = 2.0; 
             break;
