@@ -133,7 +133,7 @@ public class AdminDashboardGUI extends JFrame {
     }
     // this is for the refresh button in createCurrentVehiclesPanel
 
-private void loadVehicles() {
+    private void loadVehicles() {
     currentVehicleModel.setRowCount(0);
     
     String sql = """
@@ -142,8 +142,8 @@ private void loadVehicles() {
             v.vehicle_type,
             ps.spot_id,
             ps.floor_number,
-            v.entry_time,
-            ROUND((JULIANDAY('now') - JULIANDAY(v.entry_time)) * 24, 1) as hours_parked,
+            STRFTIME('%H:%M:%S', v.entry_time / 1000, 'unixepoch') as entry_time,
+            ROUND((STRFTIME('%s', 'now') * 1000 - v.entry_time) / 360000.0, 1) as hours_parked,
             t.created_at
         FROM vehicles v
         LEFT JOIN parking_spots ps ON v.spot_id = ps.spot_id
@@ -219,7 +219,7 @@ private void loadVehicles() {
 }
     
 
-private JPanel createUnpaidFinesPanel() {
+    private JPanel createUnpaidFinesPanel() {
     JPanel finesPanel = new JPanel(new BorderLayout());
     JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -361,7 +361,7 @@ private JPanel createUnpaidFinesPanel() {
         }
     }
 
-private void markFineAsPaid() {
+    private void markFineAsPaid() {
     int selectedRow = unpaidFinesTable.getSelectedRow();
     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this,
@@ -433,6 +433,7 @@ private void markFineAsPaid() {
         avgLabel.setText(String.format("RM %.2f", avgFine));
     }
 }
+    
     private JPanel createFineSchemePanel() {
         JPanel schemePanel = new JPanel(new BorderLayout(10, 10));
         schemePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -524,11 +525,7 @@ private void markFineAsPaid() {
         
         return schemePanel;
     }
-
-    // TODO put this method in combobox for fine.
-//    this.config.set("fineStrategy", valueFromCombobox);
-    // TODO put this method in save button.
-//    this.config.save();
+    
     private void logout() {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to logout?",
