@@ -88,6 +88,7 @@ public class DatabaseManager {
             compatibleTypes.add("HANDICAPPED");
             compatibleTypes.add("REGULAR");
             compatibleTypes.add("COMPACT");
+            compatibleTypes.add("RESERVED");
             break;
         case RESERVED:
             compatibleTypes.add("RESERVED");

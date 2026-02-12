@@ -41,6 +41,9 @@ public class OnExitPage extends javax.swing.JFrame {
         //--- Retrieve TicketID from Ticket
         //--- Retrieve Entry Time, Plate, SpotID from vehicles
         //--- Retrieve Amount from fines
+        //if vehicle type is handicapped park at handicapped spot fee = 0
+        //park at other spot spot calculate as nomral rate
+        //park at reserved spot the rate = 2
         FineContext fineContext = new FineContext();
         DatabaseManager db = DatabaseManager.getInstance();
         Ticket ticket = db.getTicketDetailsByPlateNumber(plate);
@@ -261,6 +264,11 @@ public class OnExitPage extends javax.swing.JFrame {
             method = PaymentMethod.CARD;
             String amount = paymentField.getText();
             //JEVAAN's PART
+            
+            //if vehicle type is handicapped park at handicapped spot fee = 0
+            //park at other spot spot calculate as nomral rate
+            //park at reserved spot the rate = 2
+            
             //payableAmount = (double)paymentField.getValue(); 
             //if payableAmount >= parkingFee then start saving else inform user please pay full amount parking fee
             //----- Save Start Here -----//
