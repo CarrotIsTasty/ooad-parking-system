@@ -30,6 +30,7 @@ public class AvailableParkingPage extends javax.swing.JFrame {
         this.type = type;
         this.plate = plate;
         this.reserveTimeStamp = reserveTimeStamp;
+        System.out.println(this.type);
         System.out.println("Parking Floor" + reserveTimeStamp);
         SpotPanel.setVisible(false);
         RowPanel.setVisible(false);
@@ -111,7 +112,8 @@ public class AvailableParkingPage extends javax.swing.JFrame {
         SpotPanel.setLayout(new GridLayout(0, 3, 10, 10));
         DatabaseManager db = DatabaseManager.getInstance();
         //int totalSpot = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type).size();
-        List<Integer> availableSpots = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, type);
+        System.out.println("Vehicle Type in available parking page initSpottn" + this.type);
+        List<Integer> availableSpots = db.getSpotsByFloorRowAndVehicleType(floorNumber, rowNumber, this.type);
         
         SpotPanel.removeAll();
 

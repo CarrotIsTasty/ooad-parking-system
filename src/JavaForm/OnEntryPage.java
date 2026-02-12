@@ -13,7 +13,7 @@ import static parkingapp.TestingPage.ceilToNext30Minutes;
 public class OnEntryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
-    
+    private VehicleType type;
     public enum Mode {PARKING, RESERVE, EXIT}
     private final Mode mode;
     
@@ -27,8 +27,11 @@ public class OnEntryPage extends javax.swing.JFrame {
     
     private void applyMode() {
         if (mode == Mode.RESERVE) {
+            VehicleTypeComboBox.setVisible(false);
+            VehicleTypeLabel.setVisible(false);
             ReserveTimeComboBox.setVisible(true);
-            ReserveLabel.setVisible(true);
+            ReserveLabel.setVisible(true);            
+            this.type = VehicleType.RESERVED;
             ReserveHourGenerator();
         } else if (mode == Mode.PARKING){
             ReserveTimeComboBox.setVisible(false);
@@ -167,16 +170,7 @@ public class OnEntryPage extends javax.swing.JFrame {
     
     private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextButtonActionPerformed
         int typeIndex = VehicleTypeComboBox.getSelectedIndex();
-        VehicleType type;
-        switch (typeIndex) {
-            case 0: type = VehicleType.CAR; break;
-            case 1: type = VehicleType.SUV; break;
-            case 2: type = VehicleType.TRUCK; break;
-            case 3: type = VehicleType.MOTORCYCLE; break;
-            case 4: type = VehicleType.BICYCLE; break;
-            case 5: type = VehicleType.HANDICAPPED; break;
-            default: throw new AssertionError();
-        }
+
         String plate = PlateNumberFormatText.getText();
         if (plate.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter plate number.");
@@ -185,8 +179,17 @@ public class OnEntryPage extends javax.swing.JFrame {
         String timeStamp = (String) ReserveTimeComboBox.getSelectedItem();
         System.out.println(timeStamp);
         if (mode == Mode.RESERVE) {
-            new AvailableParkingPage(type, plate, timeStamp).setVisible(true);
+            new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
         } else if (mode == Mode.PARKING){
+            switch (typeIndex) {
+            case 0: this.type = VehicleType.CAR; break;
+            case 1: this.type = VehicleType.SUV; break;
+            case 2: this.type = VehicleType.TRUCK; break;
+            case 3: this.type = VehicleType.MOTORCYCLE; break;
+            case 4: this.type = VehicleType.BICYCLE; break;
+            case 5: this.type = VehicleType.HANDICAPPED; break;
+            default: throw new AssertionError();
+        }
             new AvailableParkingPage(type, plate).setVisible(true);
         } else if (mode == Mode.EXIT){
             //JEVAAN's PART
