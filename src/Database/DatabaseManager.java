@@ -599,4 +599,56 @@ public class DatabaseManager {
         return clearParkingSpot(spotId, licensePlate, null);
     }
     
+    public boolean saveFine(String licensePlate, double amount) {
+    Connection conn = null;
+    
+    try {
+        conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false);
+        
+        String fineSql = """
+        INSERT INTO fines 
+        (license_plate, amount, issue_date, is_paid) 
+        VALUES (?, ?, ?, ?)
+        """;
+        
+        try (PreparedStatement fineStmt = conn.prepareStatement(fineSql)) {
+            // Set fine parameters
+            fineStmt.setString(1, licensePlate);
+            fineStmt.setBigDecimal(2, BigDecimal.valueOf(amount));
+            
+            // Set issue date to current timestamp
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            fineStmt.setTimestamp(3, currentTimestamp);
+            
+            // Set payment status (false when fine is created)
+            fineStmt.setBoolean(4, false);
+            
+            fineStmt.executeUpdate();
+            conn.commit();
+            return true;
+        }
+        
+    } catch (SQLException e) {
+        if (conn != null) {
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        e.printStackTrace();
+        return false;
+    } finally {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+    
 } 

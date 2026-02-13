@@ -17,10 +17,19 @@ public class Fine extends Payable {
     public String reason;
     public double totalFee;
     public Payment payment;
+    public double fineAmount;
+    
     
     public Payment getPayment(){
         return this.payment;
     }
+    
+    
+    
+    public double setFineAmount(double fineAmount){
+        return this.fineAmount = fineAmount;
+    }
+    
     
     @Override
     public void setPayment(Payment payment){

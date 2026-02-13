@@ -86,6 +86,10 @@ public class Ticket extends Payable {
         return totalFee;
     }
     
+    public double getHourlyRate(){
+        return this.hourlyRate;
+    }
+    
     //       Compact: For small vehicles (motorcycles, bicycles) - RM 2/hour
 //       Regular: For regular cars - RM 5/hour
 //       Handicapped: Reserved for handicapped vehicles - RM 2/hour (FREE only if
@@ -115,7 +119,7 @@ public class Ticket extends Payable {
     }
     
     
-    return duration*hourlyRate;
+    return duration*this.hourlyRate;
            
        }
     }

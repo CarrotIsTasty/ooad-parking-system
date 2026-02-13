@@ -24,6 +24,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
     private JPanel ParkingSummaryButtonPanel;
     private JPanel ParkingSummaryTicketPanel;
     private JPanel ParkingSummaryTicketButtonPanel;
+    String ticketID;
 
     public ParkingSummaryPage(VehicleType type, String plate, int selectedFloor, int selectedRow, int selectedSpot) {
         this(type, plate, selectedFloor, selectedRow, selectedSpot, null);
@@ -158,14 +159,14 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             if (result == JOptionPane.NO_OPTION) {
                 return;
             }
-            String ticketID;
+            
             //----- Save Start Here -----//
             if (isReserveMode()) {
                 System.out.println("Save to vehicles DB: " + plate + " | " + type + " | " + reserveTimeStamp + " | null | " + "F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot);
                 //Save to Ticket Database 
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
-                ticketID = CreateTicketID(reserveTimeStamp);
-                Ticket ticket = new Ticket(ticketID, this.plate, VehicleType.RESERVED, spotId, String.format("%s:00", reserveTimeStamp));
+                this.ticketID = CreateTicketID(reserveTimeStamp);
+                Ticket ticket = new Ticket(this.ticketID, this.plate, VehicleType.RESERVED, spotId, String.format("%s:00", reserveTimeStamp));
                 Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
                 db.saveTicket(ticket);
@@ -177,8 +178,8 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
 
                 String convertTime = ConvertTime(entryTime.toString());
                 String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
-                ticketID = CreateTicketID(convertTime);
-                Ticket ticket = new Ticket(ticketID, this.plate, this.type, spotId, formattedTime);
+                this.ticketID = CreateTicketID(convertTime);
+                Ticket ticket = new Ticket(this.ticketID, this.plate, this.type, spotId, formattedTime);
                 System.out.println("The spot ID in database is: " + ticket.getSpot().getSpotId());
                 Vehicle vehicle = new Vehicle(plate, type);
                 DatabaseManager db = DatabaseManager.getInstance();
@@ -186,7 +187,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             }
             //----- Save End Here -----//
             ParkingSummaryPanel.removeAll();
-//            initParkingSummaryTicket();
+            initParkingSummaryTicket();
             ParkingSummaryPanel.add(ParkingSummaryTicketPanel);
             ParkingSummaryPanel.revalidate();
             ParkingSummaryPanel.repaint();
@@ -211,7 +212,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.setLayout(new GridLayout(0, 1, 10, 10));
         //JEVAAN's PART
         //Retreive TicketID from database/ticket Class
-        String ticketID = null;
+        //String ticketID = null;
 //        
 //        String sql = "SELECT ticket_id FROM tickets WHERE license_plate = ? ORDER BY created_at DESC LIMIT 1";
 //         try (java.sql.Connection conn = Database.DatabaseConnection.getConnection();
@@ -224,8 +225,9 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
 //                ticketID = rs.getString("ticket_id");
 //            }
 //        }
+        
 
-        JLabel TicketIDLabel = new JLabel("TicketID    : " + ticketID);
+        JLabel TicketIDLabel = new JLabel("TicketID    : " + this.ticketID);
         TicketIDLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         TicketIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
 

@@ -78,25 +78,17 @@ public class OnExitPage extends javax.swing.JFrame {
         // Can you make my life easy and remove this shit
         
         double hourlyRate;
-        switch(db.getSpotTypeByLPlate(this.plate)){
-        case "COMPACT": 
-            hourlyRate = 2.0; 
-            break;
-        case "REGULAR": 
-            hourlyRate = 5.0; 
-            break;
-        case "Handicapped": 
-            hourlyRate = 2.0; 
-            break;
-        case "RESERVED": 
-            hourlyRate = 10.0; 
-            break;
-        default:
-            hourlyRate = 5.0;
-    }
+        
+        hourlyRate = switch (db.getSpotTypeByLPlate(this.plate)) {
+            case "COMPACT" -> 2.0;
+            case "REGULAR" -> 5.0;
+            case "Handicapped" -> 2.0;
+            case "RESERVED" -> 10.0;
+            default -> 5.0;
+        };
         
         
-        JLabel parkingRateLabel = new JLabel("Parking Rate  :"+ hourlyRate+  " /hour");
+        JLabel parkingRateLabel = new JLabel("Parking Rate  :"+ hourlyRate +  " /hour");
         parkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -110,9 +102,9 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        double fineAmount = 0;
-        if (fine != null)
-            fineAmount = fine.calculateFees();
+//        double fineAmount = 0;
+//        if (fine != null)
+//            fineAmount = fine.calculateFees();
         
         JLabel parkingFineLabel = new JLabel("Parking Fine : RM "+ fineContext.checkAndCalculateFines(ticket));
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -349,7 +341,7 @@ public class OnExitPage extends javax.swing.JFrame {
         paymentField.setPreferredSize(new Dimension(200, 25));
         paymentField.setMaximumSize(new Dimension(200, 25));
         JPanel amountRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        amountRow.add(new JLabel("Amount Pay: RM")); 
+        amountRow.add(new JLabel("Amount Pay: RM" + this.total)); 
         amountRow.add(paymentField);
 
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -468,7 +460,9 @@ public class OnExitPage extends javax.swing.JFrame {
         remainingBalanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         Payment payment = new Payment(this.amount, this.parkingfee, fineContext.checkAndCalculateFines(ticket), ticket.getTicketID(), plate, method );
+        payment.setFine();
         payment.saveInDb();
+     
         
         
         initCompletedPaymentParkingSummaryButton();

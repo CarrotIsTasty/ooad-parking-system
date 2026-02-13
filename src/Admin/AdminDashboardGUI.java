@@ -269,8 +269,8 @@ public class AdminDashboardGUI extends JFrame {
         btnMarkPaid.setForeground(Color.WHITE);
         btnMarkPaid.addActionListener(e -> markFineAsPaid());
         controlPanel.add(btnMarkPaid);
-
-        String[] columns = {"Fine ID", "License Plate", "Amount", "Reason", "Issue Date"};
+//
+        String[] columns = {"Fine ID", "License Plate", "Amount","Payment", "Issue Date"};
 
         unpaidFinesModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -299,47 +299,48 @@ public class AdminDashboardGUI extends JFrame {
     }
 
     private void loadFines() {
-        // Clear existing rows
-        unpaidFinesModel.setRowCount(0);
+    // Clear existing rows
+    unpaidFinesModel.setRowCount(0);
 
-        String sql = """
-            SELECT 
-                fine_id,
-                license_plate,
-                amount,
-                reason,
-                issue_date
-            FROM fines 
-            WHERE is_paid = 0 
-            ORDER BY issue_date DESC
-            """;
+    String sql = """
+        SELECT 
+            fine_id,
+            license_plate,
+            amount,
+            is_paid,
+            issue_date
+        FROM fines 
+        WHERE is_paid = 0 
+        ORDER BY issue_date DESC
+        """;
 
-        double totalUnpaid = 0;
-        int fineCount = 0;
+    double totalUnpaid = 0;
+    int fineCount = 0;
 
-        // Use this.connection instead of creating a new connection
-        try (PreparedStatement pstmt = this.connection.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+    // Use this.connection instead of creating a new connection
+    try (PreparedStatement pstmt = this.connection.prepareStatement(sql); 
+         ResultSet rs = pstmt.executeQuery()) {
 
-            while (rs.next()) {
-                int fineId = rs.getInt("fine_id");
-                String licensePlate = rs.getString("license_plate");
-                double amount = rs.getDouble("amount");
-                String reason = rs.getString("reason");
-                String issueDate = rs.getString("issue_date");
+        while (rs.next()) {
+            int fineId = rs.getInt("fine_id");
+            String licensePlate = rs.getString("license_plate");
+            double amount = rs.getDouble("amount");
+            boolean isPaid = rs.getBoolean("is_paid");
+            String issueDate = rs.getString("issue_date");
 
-                totalUnpaid += amount;
-                fineCount++;
+            totalUnpaid += amount;
+            fineCount++;
 
-                Object[] row = {
-                    fineId,
-                    licensePlate,
-                    String.format("RM %.2f", amount),
-                    reason,
-                    formatDateTime(issueDate)
-                };
+            Object[] row = {
+                fineId,
+                licensePlate,
+                String.format("RM %.2f", amount),
+                isPaid ? "Paid" : "Unpaid",  // Display payment status
+                formatDateTime(issueDate)
+            };
 
-                unpaidFinesModel.addRow(row);
-            }
+            unpaidFinesModel.addRow(row);
+        }
 
             // Update summary labels
             totalUnpaidLabel.setText(String.format("RM %.2f", totalUnpaid));

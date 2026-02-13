@@ -4,6 +4,7 @@
  */
 package parkingapp;
 import Database.DatabaseManager;
+import java.math.BigDecimal;
 /**
  *
  * @author herbertp
@@ -18,6 +19,7 @@ public class Payment {
     public String plate;
     public PaymentMethod paymentMethod;
     public Receipt receipt;
+    public Fine fine;
     
     public Payment(double amountPaid, double parkingFee , double fineAmount, String ticketid, String plate,PaymentMethod method){
         this.amountPaid = amountPaid;
@@ -27,6 +29,15 @@ public class Payment {
         this.plate = plate;
         this.paymentMethod = method;
     }
+    
+   public void setFine(){
+       if (this.fineAmount != 0.0){
+           DatabaseManager db = DatabaseManager.getInstance();
+           db.saveFine(this.plate, this.fineAmount);
+       }
+       
+   }
+    
     
     public String getPlate(){
         return this.plate;
