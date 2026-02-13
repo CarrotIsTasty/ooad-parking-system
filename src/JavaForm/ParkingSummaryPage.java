@@ -1,9 +1,7 @@
 package JavaForm;
 
-import JavaForm.AvailableParkingPage;
 import Database.DatabaseManager;
 import java.awt.*;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
@@ -25,6 +23,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
     private final int selectedFloor;
     private final int selectedRow;
     private final int selectedSpot;
+    private int parkingRate;
     private final String reserveTimeStamp;
     private JPanel ParkingSummaryButtonPanel;
     private JPanel ParkingSummaryTicketPanel;
@@ -99,18 +98,39 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        int parkingRate = 0;
+        
         if (isReserveMode()) {
-            parkingRate = 10;
+            this.parkingRate = 10;
         } else if (!isReserveMode()) {
             //JEVAAN's PART
             //Get Parking Rate here
             //Set the parking rate to match the database
             // parkingRate = getParkingRateFromDb();
-            parkingRate = 5;
+            //1. I format the spot id so that it matches the spot_id in the db. So example is F1-R1-S2
+            String spotId = String.format("F%d-R%d-S%d", selectedFloor, selectedRow, selectedSpot);
+            //2. I then create the function called public String getSpotTypeBySpotId (String SpotId) in DatabaseManager.java
+            //3. Then i get the instance of the DatabaseManager like this:
+            DatabaseManager db = DatabaseManager.getInstance();
+            //4. Then I call the function from DatabaseManager
+            String spotType = db.getSpotTypeBySpotId(spotId);
+            //5. Lets do a switch case
+            
+            switch(spotType){
+                case "COMPACT": this.parkingRate = 2;
+                break;
+                case "REGULAR": this.parkingRate = 5;
+                break;
+                case "HANDICAPPED": parkingRate = 2;
+                break;
+               default:
+                   this.parkingRate = 15;
+            }
+            
+            
+           
         }
 
-        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + parkingRate + "/hour");
+        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + this.parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         initParkingSummaryButton();
@@ -252,18 +272,8 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSpotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingSpotLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        int parkingRate = 0;
-        if (isReserveMode()) {
-            parkingRate = 10;
-        } else if (!isReserveMode()) {
-            //JEVAAN's PART
-            //Get Parking Rate here
-            //Set the parking rate to match the database
-//            parkingRate = getParkingRateFromDb();
-            parkingRate = 5;
-        }
 
-        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + parkingRate + "/hour");
+        JLabel ParkingRateLabel = new JLabel("Parking Rate  : " + this.parkingRate + "/hour");
         ParkingRateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         initParkingSummaryTicketButton();

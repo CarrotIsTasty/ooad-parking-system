@@ -651,4 +651,27 @@ public class DatabaseManager {
     }
 }
     
+   public String getSpotTypeBySpotId(String spotId) {
+    String sql = """
+        SELECT spot_type 
+        FROM parking_spots 
+        WHERE spot_id = ?
+        """;
+
+    try {
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, spotId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("spot_type");
+        }
+    } catch (SQLException e) {
+        System.err.println("Error getting spot type for spot_id: " + spotId + " - " + e.getMessage());
+    }
+
+    return null;
+}
+    
 } 
