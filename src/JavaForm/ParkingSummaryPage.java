@@ -11,6 +11,11 @@ import parkingapp.Ticket;
 import parkingapp.Vehicle;
 import parkingapp.VehicleType;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.awt.Desktop;
+
 public class ParkingSummaryPage extends javax.swing.JFrame {
 
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -283,6 +288,55 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
         ParkingSummaryTicketPanel.revalidate();
         ParkingSummaryTicketPanel.repaint();
     }
+    
+    private void generateTicket(JButton confirmButton){
+        try{
+                String timeString;
+                if (isReserveMode()) {
+                    timeString = reserveTimeStamp;
+                } else {
+                    timeString = entryTime.format(timeFmt);
+                }
+
+                String ticketID = "T-" + plate + "-" + timeString.replace(":", "-").replace(" ", "-"); //replace :& to-
+                String fileName = ticketID + ".txt";
+
+                File file = new File(fileName);
+                FileWriter writer = new FileWriter(file);
+                
+                if (isReserveMode()) {
+                    writer.write("Reserved Time  : " + reserveTimeStamp + "\n");
+                } else {
+                    writer.write("Entry Time     : " + entryTime.format(timeFmt) + "\n");
+                }
+                
+                writer.write("Ticket ID      : " + ticketID + "\n");
+                writer.write("Vehicle Type   : " + type + "\n");
+                writer.write("Plate Number   : " + plate + "\n");
+                writer.write("Floor Number   : " + selectedFloor + "\n");
+                writer.write("Parking Spot   : F" + selectedFloor + "-R" + selectedRow + "-S" + selectedSpot + "\n");
+
+                int parkingRate;
+                //Temporary used, since handicapped is RM2/Free
+                if(isReserveMode()){
+                    parkingRate = 10;
+                } else{
+                    parkingRate = 5;
+                }
+                writer.write("Parking Rate   : RM " + parkingRate + " / hour\n");
+                
+                writer.close();
+                
+                Desktop.getDesktop().open(file);
+                JOptionPane.showMessageDialog(this, "Ticket downloaded!");
+
+                confirmButton.setEnabled(false); //Disable Button avoid multiple download (Extra)
+                confirmButton.setBackground(Color.LIGHT_GRAY);
+            }
+            catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error， Can't generate ticket file.");
+            }
+    }
 
     private void initParkingSummaryTicketButton() {
         ParkingSummaryTicketButtonPanel.removeAll();
@@ -305,8 +359,11 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
             System.out.println("Downloading Ticket...");
             //generateTicket(); to T-PLATE-TIME.txt 
             // JASON's Part
-            new StartPage().setVisible(true);
-            dispose();
+            
+            generateTicket(confirmButton);
+            
+            //new StartPage().setVisible(true);
+            //dispose();
         });
 
         ParkingSummaryTicketButtonPanel.add(backButton);
@@ -366,7 +423,7 @@ public class ParkingSummaryPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ParkingSummaryPage(VehicleType.CAR, "TEST123", 1, 1, 1).setVisible(true);
+                new ParkingSummaryPage(VehicleType.MOTORCYCLE, "1234CAR", 2, 1, 5).setVisible(true);
             }
         });
     }
