@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import Database.DatabaseManager;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import parkingapp.Fine;
 import parkingapp.Payment;
 import parkingapp.PaymentMethod;
@@ -39,6 +42,52 @@ public class OnExitPage extends javax.swing.JFrame {
         LocalDateTime now = LocalDateTime.now();
         TimeLabel.setText("Time Now: " + now.format(timeFmt));
     }
+    
+    private void generateReceipt(JButton receiptButton) {
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            String timeString = now.format(timeFmt); 
+
+            String receiptID = "R-" + plate + "-" + timeString.replace(":", "-").replace(" ", "-");
+            String fileName = receiptID + ".txt";
+
+            File file = new File(fileName);
+            FileWriter writer = new FileWriter(file);
+
+            writer.write("Receipt Time   : " + now.format(timeFmt) + "\n");
+            writer.write("Receipt ID     : " + receiptID + "\n");
+            writer.write("Plate Number   : " + plate + "\n");
+
+            if (method != null) {
+                writer.write("Payment Method : " + this.method + "\n");
+            }
+
+            writer.write("Parking Fee    : RM " + String.format("%.2f", this.calculatedFees) + "\n");
+
+            double fineAmt = 0.0;
+            if (fine != null) {
+             
+            }
+            writer.write("Fine Amount    : RM " + String.format("%.2f", this.fine) + "\n");
+
+            writer.write("Total Paid     : RM " + String.format("%.2f", this.total) + "\n");
+            writer.write("----------------------------------\n");
+            writer.write("Thank you! Drive safely.\n");
+
+            writer.close();
+
+            Desktop.getDesktop().open(file);
+            JOptionPane.showMessageDialog(this, "Receipt downloaded!");
+
+         
+            receiptButton.setEnabled(false);
+            receiptButton.setBackground(Color.LIGHT_GRAY);
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error, Can't generate receipt file.");
+        }
+    }
+
     
     //Show Parking Fee Summary Before Payment
     private void initParkingFeeSummary() {
