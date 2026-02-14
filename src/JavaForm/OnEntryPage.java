@@ -205,7 +205,7 @@ public class OnEntryPage extends javax.swing.JFrame {
         
         if (mode == Mode.RESERVE) {
             // Check if vehicle is already in a parking spot
-            if (true) {
+            if (!db.isVehicleInParkingSpot(plate)) {
                 new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Vehicle is already parked! Please pay existing ticket before confirming");
@@ -237,7 +237,7 @@ public class OnEntryPage extends javax.swing.JFrame {
                     throw new AssertionError();
             }
             
-            if (true) {
+            if (!db.isVehicleInParkingSpot(plate)) {
                 new AvailableParkingPage(type, plate).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Vehicle is already parked! Please pay existing ticket before confirming");
@@ -249,7 +249,7 @@ public class OnEntryPage extends javax.swing.JFrame {
             
          } else if (mode == Mode.EXIT) {
     // Check if vehicle exists and hasn't exited yet
-    if (false) {
+    if (!db.isVehicleCurrentlyParked(plate)) {
         JOptionPane.showMessageDialog(this, "Your vehicle does not exist in our system");
         return;
     }

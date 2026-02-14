@@ -10,14 +10,13 @@ public class DatabaseConnection {
     private static Connection connection = null;
     
     public static synchronized Connection getConnection() {
-        if (connection == null) {
-            try {
+        try {
+            if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DB_URL);
                 System.out.println("Connected to SQLite database");
-                //createTables();
-            } catch (SQLException e) {
-                System.err.println("Error connecting to database: " + e.getMessage());
             }
+        } catch (SQLException e) {
+            System.err.println("Error connecting to database: " + e.getMessage());
         }
         return connection;
     }
