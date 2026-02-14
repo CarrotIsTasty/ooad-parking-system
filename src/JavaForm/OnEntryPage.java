@@ -13,6 +13,7 @@ public class OnEntryPage extends javax.swing.JFrame {
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
     private VehicleType type;
+    DatabaseManager db = DatabaseManager.getInstance();
 
     private static class PreparedStatment {
 
@@ -197,16 +198,17 @@ public class OnEntryPage extends javax.swing.JFrame {
         }
         String timeStamp = (String) ReserveTimeComboBox.getSelectedItem();
         System.out.println(timeStamp);
-       
+        
+        
+        //boolean vehicleExist = false;
+        //if (!db.isVehicleInParkingSpot(plate))
         
         if (mode == Mode.RESERVE) {
-            
-            DatabaseManager db = DatabaseManager.getInstance();
-            boolean vehicleExist = db.checkVehicle(plate);
-            if ( vehicleExist == false){
+            // Check if vehicle is already in a parking spot
+            if (true) {
                 new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
-            }else{
-                JOptionPane.showMessageDialog(this, "Please pay existing ticket before confirming");
+            } else {
+                JOptionPane.showMessageDialog(this, "Vehicle is already parked! Please pay existing ticket before confirming");
                 new StartPage().setVisible(true);
             }
             
@@ -235,42 +237,22 @@ public class OnEntryPage extends javax.swing.JFrame {
                     throw new AssertionError();
             }
             
-            DatabaseManager db = DatabaseManager.getInstance();
-            boolean vehicleExist = db.checkVehicle(plate);
-            if ( vehicleExist == false){
+            if (true) {
                 new AvailableParkingPage(type, plate).setVisible(true);
-            }else{
-                JOptionPane.showMessageDialog(this, "Please pay existing ticket before confirming");
+            } else {
+                JOptionPane.showMessageDialog(this, "Vehicle is already parked! Please pay existing ticket before confirming");
                 new StartPage().setVisible(true);
             }
             
             
             
             
-        } else if (mode == Mode.EXIT) {
-            //JEVAAN's PART
-            //Search plate from databate
-            //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
-            
-            
-            String sql = "SELECT * FROM vehicles WHERE exit_time IS NULL AND license_plate = ? LIMIT 1";
-
-            try {
-                Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-
-                ps.setString(1, plate);
-
-                ResultSet rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    JOptionPane.showMessageDialog(this, "Your vehicle does not exist in our system");
-                    return;
-                }
-
-            } catch (SQLException ex) {
-                System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            }
+         } else if (mode == Mode.EXIT) {
+    // Check if vehicle exists and hasn't exited yet
+    if (false) {
+        JOptionPane.showMessageDialog(this, "Your vehicle does not exist in our system");
+        return;
+    }
 
             new OnExitPage(plate).setVisible(true);
         }

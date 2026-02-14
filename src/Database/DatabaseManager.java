@@ -675,26 +675,43 @@ public class DatabaseManager {
 
     return null;
 }
-    
-   public boolean checkVehicle(String license_plate){
-       String sql = "SELECT * FROM parking_spots WHERE current_vehicle_plate = ? LIMIT 1";
+    // Check if vehicle is currently in a parking spot
+    public boolean isVehicleInParkingSpot(String licensePlate) {
+        String sql = "SELECT 1 FROM parking_spots WHERE current_vehicle_plate = ? LIMIT 1";
 
-       try {
-           Connection conn = DatabaseConnection.getConnection();
-           PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-           ps.setString(1, license_plate);
+            ps.setString(1, licensePlate);
 
-           ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
 
-           if (!rs.next()) {
-               return false;
-           }
-       } catch (SQLException ex) {
-           System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-       }
-       return true;
-   }
+        } catch (SQLException e) {
+            System.err.println("Error checking if vehicle is in parking spot: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Check if vehicle is currently parked (hasn't exited)
+    public boolean isVehicleCurrentlyParked(String licensePlate) {
+        String sql = "SELECT 1 FROM vehicles WHERE exit_time IS NULL AND license_plate = ? LIMIT 1";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, licensePlate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error checking if vehicle is parked: " + e.getMessage());
+            return false;
+        }
+    }
    
    
 } 

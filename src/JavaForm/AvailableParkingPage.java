@@ -46,9 +46,8 @@ public class AvailableParkingPage extends javax.swing.JFrame {
         FloorsPanel.setLayout(new GridLayout(0, 1, 10, 10));
         DatabaseManager db = DatabaseManager.getInstance();
         int totalFloors = db.getFloorsByVehicleType(this.type).size();
-
+        
         FloorsPanel.removeAll();
-
         for (int i = 1; i <= totalFloors; i++) {
             JButton floorBtn = new JButton("Floor " + i);
             int floorNumber = i;
@@ -268,11 +267,16 @@ public class AvailableParkingPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmButtonActionPerformed
-        if (reserveTimeStamp != null) {
+        DatabaseManager db = DatabaseManager.getInstance();
+        db.isVehicleInParkingSpot(plate);
+        
+        if (reserveTimeStamp != null && !db.isVehicleInParkingSpot(plate)) {
             System.out.println("Reserve Parking");
             new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
-        } else {
+        } else if(db.isVehicleInParkingSpot(plate)){
             new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true); }
+        else
+            JOptionPane.showMessageDialog(this, "Please pay previous parking ticket first!");
         this.dispose();
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
