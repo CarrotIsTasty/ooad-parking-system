@@ -226,7 +226,7 @@ public class OnEntryPage extends javax.swing.JFrame {
             //JEVAAN's PART
             //Search plate from databate
             //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
-            String sql = "SELECT 1 FROM vehicles WHERE license_plate = ? LIMIT 1";
+            String sql = "SELECT * FROM vehicles WHERE exit_time IS NULL AND license_plate = ? LIMIT 1";
 
             try {
                 Connection conn = DatabaseConnection.getConnection();
