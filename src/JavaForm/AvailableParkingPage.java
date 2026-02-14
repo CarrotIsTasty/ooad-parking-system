@@ -267,16 +267,13 @@ public class AvailableParkingPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmButtonActionPerformed
-        DatabaseManager db = DatabaseManager.getInstance();
-        db.isVehicleInParkingSpot(plate);
+      
         
-        if (reserveTimeStamp != null && !db.isVehicleInParkingSpot(plate)) {
+        if (reserveTimeStamp != null ) {
             System.out.println("Reserve Parking");
             new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot, reserveTimeStamp).setVisible(true);
-        } else if(db.isVehicleInParkingSpot(plate)){
+        } else {
             new ParkingSummaryPage(type, plate, selectedFloor, selectedRow, selectedSpot).setVisible(true); }
-        else
-            JOptionPane.showMessageDialog(this, "Please pay previous parking ticket first!");
         this.dispose();
     }//GEN-LAST:event_ConfirmButtonActionPerformed
 
