@@ -21,6 +21,7 @@ public class OnExitPage extends javax.swing.JFrame {
     private double amount;
     private double total;
     private double parkingfee;
+    private double calculatedFees;
     //private FineContext fineContext;
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final DateTimeFormatter timeInHours = DateTimeFormatter.ofPattern("HH:mm");
@@ -51,7 +52,7 @@ public class OnExitPage extends javax.swing.JFrame {
         FineContext fineContext = new FineContext();
         DatabaseManager db = DatabaseManager.getInstance();
         Ticket ticket = db.getTicketDetailsByPlateNumber(this.plate);
-        
+        this.calculatedFees = ticket.calculateFees();
         
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -98,7 +99,7 @@ public class OnExitPage extends javax.swing.JFrame {
         
         this.parkingfee = ticket.calculateFees();
         
-        JLabel parkingFeeLabel = new JLabel("Parking Fee : RM " + ticket.calculateFees());
+        JLabel parkingFeeLabel = new JLabel("Parking Fee : RM " + this.calculatedFees);
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
@@ -167,7 +168,7 @@ public class OnExitPage extends javax.swing.JFrame {
         ParkingPaymentPanel = new JPanel(new BorderLayout(10, 10));
         ParkingPaymentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel paymentLabel = new JLabel("Payment Methods", SwingConstants.CENTER);
+        JLabel paymentLabel = new JLabel("Payable Amounts: " + this.calculatedFees , SwingConstants.CENTER);
         paymentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingPaymentPanel.add(paymentLabel, BorderLayout.NORTH);
 
@@ -248,11 +249,15 @@ public class OnExitPage extends javax.swing.JFrame {
         payBtn.addActionListener(e -> {
             //Check Payments
             String text = paymentField.getText().trim();
+            if ( Double.parseDouble(text) != calculatedFees) {
+                JOptionPane.showMessageDialog(p, "Please pay exact amount.");
+                return;
+            }
             if (text.isEmpty()) {JOptionPane.showMessageDialog(p, "Please enter an amount to pay."); return;
             } else {
                 try {
                      this.amount = Double.parseDouble(text);
-                    if (this.amount <= 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00");  return;} 
+                    if (this.amount < 0) { JOptionPane.showMessageDialog(p, "Amount must be greater than 0.00");  return;} 
                     else { JOptionPane.showMessageDialog(p, "Processing payment of " + format.format(this.amount));}
                 } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(p, "Invalid amount format. Please use 0.00");  return;}
             }
