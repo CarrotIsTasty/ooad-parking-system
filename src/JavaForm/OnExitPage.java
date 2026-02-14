@@ -560,6 +560,7 @@ public class OnExitPage extends javax.swing.JFrame {
         downloadButton.addActionListener(e -> {
             System.out.println("Downloading...");
             //generateReceipt(); to T-PLATE-TIME.txt 
+            generateReceipt(downloadButton);
             // JASON's Part
             new StartPage().setVisible(true);
             dispose();
