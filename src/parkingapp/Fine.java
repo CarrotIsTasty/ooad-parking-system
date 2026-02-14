@@ -20,6 +20,11 @@ public class Fine extends Payable {
     public double fineAmount;
     
     
+    
+    public Fine(double fineAmount){
+        this.fineAmount = fineAmount;
+    }
+    
     public Payment getPayment(){
         return this.payment;
     }
@@ -30,6 +35,9 @@ public class Fine extends Payable {
         return this.fineAmount = fineAmount;
     }
     
+    public double getFineAmount(){
+        return this.fineAmount;
+    }
     
     @Override
     public void setPayment(Payment payment){

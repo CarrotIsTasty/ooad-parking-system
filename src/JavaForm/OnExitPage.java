@@ -64,11 +64,9 @@ public class OnExitPage extends javax.swing.JFrame {
 
             writer.write("Parking Fee    : RM " + String.format("%.2f", this.calculatedFees) + "\n");
 
-            double fineAmt = 0.0;
-            if (fine != null) {
-             
-            }
-            writer.write("Fine Amount    : RM " + String.format("%.2f", this.fine) + "\n");
+          
+            
+            writer.write("Fine Amount    : RM " + String.format("%.2f", this.fine.getFineAmount()) + "\n");
 
             writer.write("Total Paid     : RM " + String.format("%.2f", this.total) + "\n");
             writer.write("----------------------------------\n");
@@ -497,7 +495,9 @@ public class OnExitPage extends javax.swing.JFrame {
         parkingFeeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFeeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
-        JLabel parkingFineLabel = new JLabel("Parking Fine : RM " + fineContext.checkAndCalculateFines(ticket));
+       
+        this.fine  = new Fine(fineContext.checkAndCalculateFines(ticket));
+        JLabel parkingFineLabel = new JLabel("Parking Fine : RM " + this.fine.getFineAmount());
         parkingFineLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         parkingFineLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
