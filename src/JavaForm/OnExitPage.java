@@ -260,7 +260,7 @@ public class OnExitPage extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(this, "Confirm Payment,\nPayments are not refundable.", "Confirmation Dialog", JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.NO_OPTION) {return;}
             method = PaymentMethod.CARD;
-           //amount = paymentField.getText();
+            //amount = paymentField.getText();
             //JEVAAN's PART
             
             //if vehicle type is handicapped park at handicapped spot fee = 0
@@ -410,8 +410,10 @@ public class OnExitPage extends javax.swing.JFrame {
         String timeString = now.format(timeFormatter);
         String timeStringHours = now.format(timeInHours);
         FineContext fineContext = new FineContext();
+        
         db.clearParkingSpot(ticket.getSpot().getSpotId(), plate, ticket);
-        //THIS WILL MAKE ME HATE MY LIFE --HERBERT
+        
+        
         JLabel ThankLabel = new JLabel("Thank You!");
         ThankLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         ThankLabel.setHorizontalAlignment(SwingConstants.CENTER);

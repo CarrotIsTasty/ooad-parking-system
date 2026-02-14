@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import parkingapp.VehicleType;
 import java.sql.*;
+import Database.DatabaseManager;
 
 public class OnEntryPage extends javax.swing.JFrame {
 
@@ -196,8 +197,20 @@ public class OnEntryPage extends javax.swing.JFrame {
         }
         String timeStamp = (String) ReserveTimeComboBox.getSelectedItem();
         System.out.println(timeStamp);
+       
+        
         if (mode == Mode.RESERVE) {
-            new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
+            
+            DatabaseManager db = DatabaseManager.getInstance();
+            boolean vehicleExist = db.checkVehicle(plate);
+            if ( vehicleExist == false){
+                new AvailableParkingPage(VehicleType.RESERVED, plate, timeStamp).setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(this, "Please pay existing ticket before confirming");
+                new StartPage().setVisible(true);
+            }
+            
+            
         } else if (mode == Mode.PARKING) {
             switch (typeIndex) {
                 case 0:
@@ -221,11 +234,25 @@ public class OnEntryPage extends javax.swing.JFrame {
                 default:
                     throw new AssertionError();
             }
-            new AvailableParkingPage(type, plate).setVisible(true);
+            
+            DatabaseManager db = DatabaseManager.getInstance();
+            boolean vehicleExist = db.checkVehicle(plate);
+            if ( vehicleExist == false){
+                new AvailableParkingPage(type, plate).setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(this, "Please pay existing ticket before confirming");
+                new StartPage().setVisible(true);
+            }
+            
+            
+            
+            
         } else if (mode == Mode.EXIT) {
             //JEVAAN's PART
             //Search plate from databate
             //If plate does not exist -> Generate JOptionPane "Your vehicle does not exist in our system"
+            
+            
             String sql = "SELECT * FROM vehicles WHERE exit_time IS NULL AND license_plate = ? LIMIT 1";
 
             try {

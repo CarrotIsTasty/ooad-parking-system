@@ -676,28 +676,25 @@ public class DatabaseManager {
     return null;
 }
     
-//   public boolean checkVehicle(String license_plate){
-//       String sql = "SELECT * FROM vehicles WHERE exit_time = null AND license_plate = ? LIMIT 1";
-//
-//       try {
-//           Connection conn = DatabaseConnection.getConnection();
-//           PreparedStatement ps = conn.prepareStatement(sql);
-//
-//           ps.setString(1, license_plate);
-//
-//           ResultSet rs = ps.executeQuery();
-//
-//           if (!rs.next()) {
-//               JOptionPane.showMessageDialog(this, "Your vehicle does not exist in our system");
-//               return;
-//           }
-            // else if(rs.next())
-//               JOptionPane.showMessageDialog(this, "Your vehicle already exist in our system");
-//               return;
-//       } catch (SQLException ex) {
-//           System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-//       }
-//   
-//   }
+   public boolean checkVehicle(String license_plate){
+       String sql = "SELECT * FROM parking_spots WHERE current_vehicle_plate = ? LIMIT 1";
+
+       try {
+           Connection conn = DatabaseConnection.getConnection();
+           PreparedStatement ps = conn.prepareStatement(sql);
+
+           ps.setString(1, license_plate);
+
+           ResultSet rs = ps.executeQuery();
+
+           if (!rs.next()) {
+               return false;
+           }
+       } catch (SQLException ex) {
+           System.getLogger(OnEntryPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+       }
+       return true;
+   }
+   
    
 } 
