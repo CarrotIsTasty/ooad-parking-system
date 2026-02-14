@@ -217,7 +217,7 @@ public class OnExitPage extends javax.swing.JFrame {
         ParkingPaymentPanel = new JPanel(new BorderLayout(10, 10));
         ParkingPaymentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JLabel paymentLabel = new JLabel("Payable Amounts: " + this.calculatedFees , SwingConstants.CENTER);
+        JLabel paymentLabel = new JLabel("Payable Amounts: " + total , SwingConstants.CENTER);
         paymentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         ParkingPaymentPanel.add(paymentLabel, BorderLayout.NORTH);
 
@@ -298,7 +298,7 @@ public class OnExitPage extends javax.swing.JFrame {
         payBtn.addActionListener(e -> {
             //Check Payments
             String text = paymentField.getText().trim();
-            if ( Double.parseDouble(text) != calculatedFees) {
+            if ( Double.parseDouble(text) != total) {
                 JOptionPane.showMessageDialog(p, "Please pay exact amount.");
                 return;
             }
